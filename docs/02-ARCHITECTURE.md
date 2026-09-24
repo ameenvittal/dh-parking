@@ -74,6 +74,7 @@ Pin exact versions at scaffold time with `pnpm add <pkg>@<major>` and commit the
 | exceljs | 4 | Excel export |
 | jspdf, jspdf-autotable | 3, 5 | PDF export |
 | react-markdown | 10 | Render assistant replies |
+| remark-gfm | 4 | GFM tables and formatting for assistant replies |
 | vite-plugin-pwa | 1 | PWA manifest and service worker |
 | @fontsource-variable/manrope, @fontsource/noto-sans-malayalam, @fontsource/barlow-semi-condensed | latest | Self-hosted fonts |
 | three | 0.186 | Procedural 3D vehicle preview in vehicle detail views |

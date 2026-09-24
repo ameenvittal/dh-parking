@@ -3,7 +3,38 @@
     "checkIn": "Check in vehicle",
     "leaving": "Vehicle leaving",
     "find": "Find a vehicle",
-    "freeNow": "Free now"
+    "freeNow": "Free now",
+    "noGate": "No gate selected",
+    "switchGate": "Switch gate",
+    "noCheckins": "No check-ins yet",
+    "noCheckinsBody": "Vehicles checked in at this gate will appear here.",
+    "lastCheckins": "Recent check-ins",
+    "freeType": {
+      "bike": "Bikes",
+      "car": "Cars",
+      "ev": "EVs",
+      "bus": "Buses",
+      "other": "Other"
+    }
+  },
+  "nav": {
+    "label": "Gate navigation",
+    "home": "Home",
+    "checkIn": "Check in",
+    "leaving": "Exit",
+    "find": "Find"
+  },
+  "checkin": {
+    "steps": {
+      "photo": "Check in",
+      "details": "Vehicle details",
+      "phone": "Driver phone",
+      "slot": "Assign slot"
+    },
+    "stepIndicator": "Step {{current}} of {{total}}",
+    "discardTitle": "Discard this check-in?",
+    "discardBody": "Any details entered so far will be lost.",
+    "discardConfirm": "Discard"
   },
   "photo": {
     "empty": "Take a photo of the vehicle. Include the pass card if it's on the dashboard.",
@@ -11,7 +42,12 @@
     "use": "Use photo",
     "retake": "Retake",
     "manual": "Enter details manually",
-    "reading": "Reading plate…"
+    "reading": "Reading plate…",
+    "uploading": "Uploading photo…",
+    "previewAlt": "Vehicle photo preview",
+    "passAlt": "Pass card photo preview",
+    "removePass": "Remove pass card photo",
+    "addPass": "Add pass card photo"
   },
   "details": {
     "plateLabel": "Number plate",
@@ -19,21 +55,90 @@
     "highConfidence": "High confidence",
     "invalidPlate": "This doesn't look like an Indian plate. Check it.",
     "alreadyIn": "Already checked in: {{slot}}",
-    "accessible": "Needs accessible parking"
+    "accessible": "Needs accessible parking",
+    "readByAi": "Read by AI",
+    "openExisting": "Open existing",
+    "continueAnyway": "Continue anyway",
+    "vehicleType": "Vehicle type",
+    "category": "Visitor category",
+    "more": "More details",
+    "color": "Colour",
+    "make": "Make / brand",
+    "passNumber": "Pass number",
+    "passHolder": "Pass holder name"
   },
   "phone": {
-    "helper": "The parking link is sent on WhatsApp to this number."
+    "label": "Mobile number",
+    "helper": "The parking link is sent on WhatsApp to this number.",
+    "name": "Driver name (optional)",
+    "language": "Message language"
   },
   "slot": {
     "recommended": "Recommended",
     "otherFree": "Other free slots",
     "fromGate": "{{distance}} from this gate",
     "pickOnMap": "Pick on map",
-    "assignSend": "Assign and send"
+    "assignSend": "Assign and send",
+    "fee": "Parking fee",
+    "freeFor": "Free for {{category}}",
+    "fallback": {
+      "overflow": "Main zones are full. Showing overflow parking.",
+      "category_any": "No free slots for {{category}}. Showing other zones.",
+      "accessible": "No accessible slot free. Showing nearest slots."
+    },
+    "noSlots": "No free slots for this vehicle type.",
+    "taken": "That slot was just taken. Pick another."
   },
   "done": {
     "title": "Checked in",
     "scanQr": "Driver can scan this to open the map",
-    "next": "Check in next vehicle"
+    "next": "Check in next vehicle",
+    "whatsapp": "WhatsApp",
+    "failedTitle": "WhatsApp message failed",
+    "resend": "Resend",
+    "qrTitle": "Driver link QR code",
+    "simulator": "Open WhatsApp simulator"
+  },
+  "fee": {
+    "amount": "Parking fee",
+    "dueHelper": "Amount to collect before exit",
+    "method": "Payment method"
+  },
+  "vehicle": {
+    "title": "Vehicle details",
+    "linkSent": "Link sent on WhatsApp",
+    "changeSlot": "Change slot",
+    "moveTo": "Move to {{slot}}",
+    "slotChanged": "Vehicle moved to {{slot}}",
+    "resend": "Resend link",
+    "cancel": "Cancel check-in",
+    "cancelTitle": "Cancel check-in for {{plate}}?",
+    "cancelBody": "The slot will be released immediately.",
+    "keep": "Keep check-in",
+    "reason": "Reason",
+    "cancelled": "Check-in cancelled",
+    "checkedIn": "Checked in at {{time}}",
+    "checkedInAt": "Checked in at {{time}} at {{gate}}",
+    "timeline": "Timeline"
+  },
+  "exit": {
+    "marked": "Vehicle exit recorded",
+    "markExit": "Mark exit",
+    "scan": "Scan plate",
+    "emptyTitle": "No active check-ins",
+    "emptyBody": "Active vehicles will appear here once checked in.",
+    "confirmTitle": "Mark exit for {{plate}}?"
+  },
+  "search": {
+    "label": "Search vehicles",
+    "placeholder": "Search plate or phone…",
+    "filter": "Filter status",
+    "noResults": "No vehicles found",
+    "noResultsBody": "Try searching by number plate or mobile number.",
+    "checkedInAgo": "Checked in {{time}}",
+    "noActive": "No active vehicles found"
+  },
+  "menu": {
+    "title": "Gate menu"
   }
 }

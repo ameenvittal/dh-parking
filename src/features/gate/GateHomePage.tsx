@@ -8,6 +8,7 @@ import { Skeleton } from '@/components/ui/Skeleton'
 import { EmptyState } from '@/components/common/EmptyState'
 import { ErrorState } from '@/components/common/ErrorState'
 import { PlateChip } from '@/components/common/PlateChip'
+import { SlotLabel } from '@/components/common/SlotLabel'
 import { StatusBadge } from '@/components/common/StatusBadge'
 import { vehicleTypeIcon } from '@/components/common/statusMeta'
 import { formatNumber, formatRelative } from '@/lib/format'
@@ -46,25 +47,27 @@ function GateHome({ ctx }: { ctx: GateCtx }) {
 
   return (
     <>
-      <div className="flex flex-col gap-2">
-        <Button asChild size="lg" block>
-          <Link to="/gate/checkin">
-            <Camera size={20} strokeWidth={1.75} aria-hidden="true" />
-            {t('gate.home.checkIn')}
+      <div className="flex flex-col gap-2.5">
+        <Button asChild size="lg" block className="h-14 shadow-raised">
+          <Link to="/gate/checkin" className="flex items-center justify-center gap-2.5">
+            <Camera size={22} strokeWidth={2} aria-hidden="true" />
+            <span className="font-semibold">{t('gate.home.checkIn')}</span>
           </Link>
         </Button>
-        <Button asChild variant="secondary" size="lg" block>
-          <Link to="/gate/exit">
-            <LogOut size={20} strokeWidth={1.75} aria-hidden="true" />
-            {t('gate.home.leaving')}
-          </Link>
-        </Button>
-        <Button asChild variant="secondary" size="lg" block>
-          <Link to="/gate/vehicles">
-            <Search size={20} strokeWidth={1.75} aria-hidden="true" />
-            {t('gate.home.find')}
-          </Link>
-        </Button>
+        <div className="grid grid-cols-2 gap-2">
+          <Button asChild variant="secondary" size="lg" block>
+            <Link to="/gate/exit" className="flex items-center justify-center gap-2">
+              <LogOut size={18} strokeWidth={1.75} aria-hidden="true" />
+              <span>{t('gate.home.leaving')}</span>
+            </Link>
+          </Button>
+          <Button asChild variant="secondary" size="lg" block>
+            <Link to="/gate/vehicles" className="flex items-center justify-center gap-2">
+              <Search size={18} strokeWidth={1.75} aria-hidden="true" />
+              <span>{t('gate.home.find')}</span>
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {overview.isError ? <ErrorState error={overview.error} onRetry={() => void overview.refetch()} /> : null}
@@ -73,27 +76,35 @@ function GateHome({ ctx }: { ctx: GateCtx }) {
         <h2 id="gate-free-now" className="text-h3 text-ink">
           {t('gate.home.freeNow')}
         </h2>
-        <dl className="grid grid-cols-2 overflow-hidden rounded-lg border border-line bg-surface">
-          {types.map((type, i) => {
+        <div className="grid grid-cols-2 gap-2.5">
+          {types.map((type) => {
             const Icon = vehicleTypeIcon[type]
+            const count = free ? free[type] : null
             return (
               <div
                 key={type}
-                className={[
-                  'flex items-center gap-3 px-4 py-3',
-                  i % 2 === 1 ? 'border-l border-line' : '',
-                  i >= 2 ? 'border-t border-line' : '',
-                ].join(' ')}
+                className="flex flex-col justify-between gap-2.5 rounded-lg border border-line bg-surface p-3.5 shadow-raised transition-colors hover:border-line-strong"
               >
-                <Icon size={20} strokeWidth={1.75} aria-hidden="true" className="shrink-0 text-muted" />
-                <dt className="flex-1 text-body text-muted">{t(`gate.home.freeType.${type}`)}</dt>
-                <dd className="font-display text-h2 text-ink tabular-nums">
-                  {free ? formatNumber(free[type]) : <Skeleton className="h-6 w-8" />}
-                </dd>
+                <div className="flex items-center justify-between">
+                  <span className="flex size-8 items-center justify-center rounded-md bg-surface-2 text-muted">
+                    <Icon size={18} strokeWidth={1.75} aria-hidden="true" />
+                  </span>
+                  <span className="text-body-sm font-medium text-muted">
+                    {t(`gate.home.freeType.${type}`)}
+                  </span>
+                </div>
+                <div className="flex items-baseline justify-between pt-1">
+                  <span className="font-display text-h1 font-bold text-ink tabular-nums">
+                    {count !== null ? formatNumber(count) : <Skeleton className="h-7 w-12" />}
+                  </span>
+                  <span className="text-caption text-muted">
+                    {t('gate.home.freeNow')}
+                  </span>
+                </div>
               </div>
             )
           })}
-        </dl>
+        </div>
       </section>
 
       <section className="flex flex-col gap-3" aria-labelledby="gate-recent">
@@ -107,20 +118,22 @@ function GateHome({ ctx }: { ctx: GateCtx }) {
             <Skeleton className="h-14 w-full" />
           </div>
         ) : overview.data && overview.data.recent.length > 0 ? (
-          <ul className="flex flex-col divide-y divide-line overflow-hidden rounded-lg border border-line bg-surface">
+          <ul className="flex flex-col divide-y divide-line overflow-hidden rounded-lg border border-line bg-surface shadow-raised">
             {overview.data.recent.map((r) => (
               <li key={r.visit_id}>
                 <button
                   type="button"
                   onClick={() => setOpenVisit(r.visit_id)}
-                  className="flex min-h-14 w-full items-center gap-3 px-4 py-2 text-left outline-none active:bg-canvas focus-visible:bg-surface-2"
+                  className="flex min-h-14 w-full items-center justify-between gap-3 px-4 py-3 text-left outline-none transition-colors active:bg-canvas hover:bg-surface-2 focus-visible:bg-surface-2"
                 >
-                  <PlateChip plate={r.plate} size="sm" />
-                  <span className="font-display text-h3 font-bold text-ink tabular-nums">{r.slot_label ?? ''}</span>
-                  <span className="ml-auto flex flex-col items-end gap-1">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <PlateChip plate={r.plate} size="sm" />
+                    {r.slot_label ? <SlotLabel size="sm" label={r.slot_label} /> : null}
+                  </div>
+                  <div className="ml-auto flex shrink-0 flex-col items-end gap-1">
                     <StatusBadge status={r.status} />
                     <span className="text-caption text-muted">{formatRelative(r.checked_in_at, t)}</span>
-                  </span>
+                  </div>
                 </button>
               </li>
             ))}

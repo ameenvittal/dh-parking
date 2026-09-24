@@ -265,7 +265,7 @@ shadcn Table. Header `bg-surface-2 text-caption text-muted` (sentence case), row
 
 ### Toasts (sonner)
 
-Bottom-center on mobile, bottom-right on admin. One line, max two. Success toasts only for actions without a visible result on screen.
+Bottom-center. One line, max two. Success toasts only for actions without a visible result on screen.
 
 ### Empty state (`common/EmptyState.tsx`)
 

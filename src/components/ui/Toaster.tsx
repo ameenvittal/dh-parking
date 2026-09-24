@@ -1,12 +1,12 @@
 import { Toaster as Sonner } from 'sonner'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 
-/** Bottom-center on mobile, bottom-right on admin widths (docs 06 section 6). */
+/** Bottom-center toasts across screen widths (docs 06 section 6). */
 export function Toaster() {
   const wide = useMediaQuery('(min-width: 1024px)')
   return (
     <Sonner
-      position={wide ? 'bottom-right' : 'bottom-center'}
+      position="bottom-center"
       offset={wide ? 24 : 16}
       mobileOffset={{ bottom: 88, left: 16, right: 16 }}
       visibleToasts={3}
