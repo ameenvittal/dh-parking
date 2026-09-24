@@ -118,6 +118,7 @@
   /* Layout sizes */
   --container-form: 400px;
   --container-assistant: 760px;
+  --width-assistant: 760px;
 }
 
 /* shadcn/ui variable names mapped to the tokens above */

@@ -60,8 +60,8 @@ export function answer(input: AssistantInput): AssistantReply {
           ml: `**${formatPlate(v.plate)}**: സ്ലോട്ട് **${v.slot_label ?? '-'}**${v.zone_name ? ` (${v.zone_name})` : ''}, നില ${v.status}.`,
         }),
         '',
-        `| | |`,
-        `|---|---|`,
+        '| Field | Details |',
+        '|:---|:---|',
         `| ${tr(lang, { en: 'Checked in', ml: 'ചെക്ക് ഇൻ' })} | ${formatClock(v.checked_in_at)}${v.entry_gate_name ? `, ${v.entry_gate_name}` : ''} |`,
         `| ${tr(lang, { en: 'Type', ml: 'തരം' })} | ${v.vehicle_type}, ${v.category} |`,
         `| ${tr(lang, { en: 'Phone', ml: 'ഫോൺ' })} | ${v.phone ?? v.phone_masked} |`,
@@ -69,13 +69,13 @@ export function answer(input: AssistantInput): AssistantReply {
       ]
       return { reply: lines.join('\n'), tools_used: used }
     }
-    const rows = found.map((v) => `| ${formatPlate(v.plate)} | ${v.slot_label ?? '-'} | ${v.status} | ${formatClock(v.checked_in_at)} |`)
+    const rows = found.map((v) => `| ${formatPlate(v.plate)} | ${v.slot_label ?? '-'} | ${v.status.replace('_', ' ')} | ${formatClock(v.checked_in_at)} |`)
     return {
       reply: [
         tr(lang, { en: `${found.length} vehicles match **${query}**:`, ml: `**${query}** എന്നതിന് ${found.length} വാഹനങ്ങൾ:` }),
         '',
         '| Plate | Slot | Status | Checked in |',
-        '|---|---|---|---|',
+        '|:---|:---|:---|---:|',
         ...rows,
       ].join('\n'),
       tools_used: used,
@@ -102,8 +102,8 @@ export function answer(input: AssistantInput): AssistantReply {
       reply: [
         tr(lang, { en: `${open.length} open alerts. Handle them on the Alerts page.`, ml: `${open.length} തുറന്ന അലേർട്ടുകൾ. Alerts പേജിൽ കൈകാര്യം ചെയ്യുക.` }),
         '',
-        '| Type | Vehicle | Zone | Raised |',
-        '|---|---|---|---|',
+        '| Type | Vehicle | Zone | Raised at |',
+        '|:---|:---|:---|---:|',
         ...open.map((a) => `| ${a.type.replace('_', ' ')} | ${a.plate ? formatPlate(a.plate) : '-'} | ${a.zone_code ?? '-'} | ${formatClock(a.created_at)} |`),
       ].join('\n'),
       tools_used: used,
@@ -119,8 +119,8 @@ export function answer(input: AssistantInput): AssistantReply {
       reply: [
         tr(lang, { en: `Collected **${formatInr(r.total)}** from ${r.count_paid} vehicles (${r.count_free} free).`, ml: `${r.count_paid} വാഹനങ്ങളിൽ നിന്ന് **${formatInr(r.total)}** ലഭിച്ചു (${r.count_free} സൗജന്യം).` }),
         '',
-        '| Method | Amount | Vehicles |',
-        '|---|---|---|',
+        '| Payment method | Amount | Vehicles |',
+        '|:---|---:|---:|',
         ...r.by_method.map((m) => `| ${m.method} | ${formatInr(m.amount)} | ${m.count} |`),
       ].join('\n'),
       tools_used: used,
@@ -159,7 +159,7 @@ export function answer(input: AssistantInput): AssistantReply {
         }),
         '',
         '| Window | Arrivals | Exits |',
-        '|---|---|---|',
+        '|:---|---:|---:|',
         ...p.series.filter((s) => s.arrivals + s.exits > 0).slice(-8).map((s) => `| ${formatClock(s.t)} | ${s.arrivals} | ${s.exits} |`),
       ].join('\n'),
       tools_used: used,
@@ -173,12 +173,12 @@ export function answer(input: AssistantInput): AssistantReply {
       reply: [
         tr(lang, { en: `**${c.total}** vehicles checked in so far.`, ml: `ഇതുവരെ **${c.total}** വാഹനങ്ങൾ എത്തി.` }),
         '',
-        '| Type | Vehicles |',
-        '|---|---|',
+        '| Vehicle type | Count |',
+        '|:---|---:|',
         ...c.by_type.map((x) => `| ${x.type} | ${x.count} |`),
         '',
-        '| Category | Vehicles |',
-        '|---|---|',
+        '| Category | Count |',
+        '|:---|---:|',
         ...c.by_category.map((x) => `| ${x.category} | ${x.count} |`),
       ].join('\n'),
       tools_used: used,
@@ -196,16 +196,58 @@ export function answer(input: AssistantInput): AssistantReply {
     if (zones.length === 0)
       return { reply: tr(lang, { en: `There is no zone ${zoneCode}.`, ml: `${zoneCode} എന്ന സോൺ ഇല്ല.` }), tools_used: used }
     const fullest = [...zones].sort((a, b) => b.occupancy_pct - a.occupancy_pct)[0]
+
+    let summary: string
+    if (zoneCode) {
+      if (fullest.occupancy_pct >= 75) {
+        summary = tr(lang, {
+          en: `Zone ${fullest.code} (${fullest.name}) is almost full at **${fullest.occupancy_pct}%** with only ${fullest.available} free slots remaining.`,
+          ml: `സോൺ ${fullest.code} (${fullest.name}) **${fullest.occupancy_pct}%** നിറഞ്ഞു, ${fullest.available} ഒഴിവ് ബാക്കി.`,
+        })
+      } else if (fullest.occupancy_pct === 0) {
+        summary = tr(lang, {
+          en: `Zone ${fullest.code} (${fullest.name}) is completely open at 0% occupancy with all ${fullest.available} slots free.`,
+          ml: `സോൺ ${fullest.code} (${fullest.name}) പൂർണ്ണമായും ഒഴിവാണ് (0% ഒക്യുപ്പൻസി, ${fullest.available} ഒഴിവ്).`,
+        })
+      } else {
+        summary = tr(lang, {
+          en: `Zone ${fullest.code} (${fullest.name}) is at **${fullest.occupancy_pct}%** occupancy with ${fullest.available} free slots.`,
+          ml: `സോൺ ${fullest.code} (${fullest.name}) **${fullest.occupancy_pct}%** ഒക്യുപ്പൻസിയിലാണ് (${fullest.available} ഒഴിവ്).`,
+        })
+      }
+    } else {
+      const isAskingAlmostFull = /almost|nearly|full/i.test(lower)
+      if (fullest.occupancy_pct === 0) {
+        summary = tr(lang, {
+          en: isAskingAlmostFull
+            ? `No zones are almost full right now. All zones are open with 0% occupancy (**${s.slots.available}** free slots total).`
+            : `All zones are open with 0% occupancy (**${s.slots.available}** free slots total).`,
+          ml: isAskingAlmostFull
+            ? `ഇപ്പോൾ ഒരു സോണും നിറഞ്ഞിട്ടില്ല. എല്ലാ സോണുകളിലും ധാരാളം ഒഴിവുണ്ട് (0% ഒക്യുപ്പൻസി, ആകെ **${s.slots.available}** ഒഴിവ്).`
+            : `എല്ലാ സോണുകളിലും പൂർണ്ണമായും ഒഴിവുണ്ട് (ആകെ **${s.slots.available}** ഒഴിവ്).`,
+        })
+      } else if (fullest.occupancy_pct < 75) {
+        summary = tr(lang, {
+          en: isAskingAlmostFull
+            ? `No zones are almost full right now. Highest occupancy is Zone ${fullest.code} (${fullest.name}) at **${fullest.occupancy_pct}%** with ${fullest.available} free slots.`
+            : `Zone ${fullest.code} (${fullest.name}) has the highest occupancy at **${fullest.occupancy_pct}%** with ${fullest.available} free slots.`,
+          ml: `ഇപ്പോൾ ഒരു സോണും നിറഞ്ഞിട്ടില്ല. കൂടുതൽ ഒക്യുപ്പൻസി സോൺ ${fullest.code} (${fullest.name}) ആണ് (**${fullest.occupancy_pct}%**, ${fullest.available} ഒഴിവ്).`,
+        })
+      } else {
+        summary = tr(lang, {
+          en: `Zone ${fullest.code} (${fullest.name}) is almost full at **${fullest.occupancy_pct}%** with only ${fullest.available} free slots remaining.`,
+          ml: `സോൺ ${fullest.code} (${fullest.name}) **${fullest.occupancy_pct}%** നിറഞ്ഞു, ${fullest.available} ഒഴിവ് ബാക്കി.`,
+        })
+      }
+    }
+
     return {
       reply: [
-        tr(lang, {
-          en: `Zone ${fullest.code} (${fullest.name}) is ${zones.length > 1 ? 'the fullest ' : ''}at **${fullest.occupancy_pct}%** with ${fullest.available} free.`,
-          ml: `സോൺ ${fullest.code} **${fullest.occupancy_pct}%** നിറഞ്ഞു, ${fullest.available} ഒഴിവ്.`,
-        }),
+        summary,
         '',
-        '| Zone | Free | Assigned | Parked | Blocked | Full |',
-        '|---|---|---|---|---|---|',
-        ...zones.map((z) => `| ${z.code} ${z.name} | ${z.available} | ${z.assigned} | ${z.occupied} | ${z.blocked} | ${z.occupancy_pct}% |`),
+        '| Zone | Free | Assigned | Parked | Blocked | Occupancy |',
+        '|:---|---:|---:|---:|---:|---:|',
+        ...zones.map((z) => `| Zone ${z.code} (${z.name}) | ${z.available} | ${z.assigned} | ${z.occupied} | ${z.blocked} | ${z.occupancy_pct}% |`),
       ].join('\n'),
       tools_used: used,
     }

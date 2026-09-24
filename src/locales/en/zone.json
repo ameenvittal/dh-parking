@@ -106,7 +106,11 @@
     "empty": "No free slot matches.",
     "confirmIn": "Confirm in {{slot}}",
     "pick": "Pick a slot",
-    "assignedNow": "Assigned now"
+    "assignedNow": "Assigned now",
+    "selected": "Selected",
+    "tapSlotPrompt": "Tap a slot to select",
+    "occupied": "That slot is already occupied",
+    "unavailable": "Slot not available for this vehicle"
   },
   "reportSheet": {
     "title": "Report wrong parking",
