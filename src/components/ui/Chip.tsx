@@ -14,7 +14,7 @@ export function Chip({ selected = false, icon, className, children, ...props }: 
       type="button"
       aria-pressed={selected}
       className={cn(
-        'inline-flex h-9 shrink-0 items-center gap-1.5 rounded-sm border px-3 text-body-sm font-semibold whitespace-nowrap transition-colors outline-none focus-visible:ring-2 focus-visible:ring-focus disabled:opacity-50',
+        'inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border px-3.5 text-body-sm font-semibold whitespace-nowrap transition-all duration-150 outline-none focus-visible:ring-2 focus-visible:ring-focus disabled:opacity-50 active:scale-[0.98]',
         selected ? 'border-primary bg-primary-soft text-primary' : 'border-line-strong bg-surface text-ink hover:bg-surface-2',
         className,
       )}

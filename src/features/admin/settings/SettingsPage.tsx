@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Plus, X } from 'lucide-react'
-import { useEffect, useState, type ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { toast } from 'sonner'
@@ -51,13 +51,13 @@ function SettingsView({ event: listed }: { event: EventListItem }) {
         </ul>
       </nav>
       <div className="flex max-w-3xl min-w-0 flex-1 flex-col gap-6">
-        <EventSection e={e} />
-        <TimingsSection e={e} />
-        <LocationSection e={e} />
-        <EmergencySection e={e} />
-        <MapSection e={e} />
+        <EventSection key={e.updated_at} e={e} />
+        <TimingsSection key={e.updated_at} e={e} />
+        <LocationSection key={e.updated_at} e={e} />
+        <EmergencySection key={e.updated_at} e={e} />
+        <MapSection key={e.updated_at} e={e} />
         <WhatsAppSection />
-        <LanguageSection e={e} />
+        <LanguageSection key={e.updated_at} e={e} />
       </div>
     </div>
   )
@@ -70,9 +70,6 @@ function useSection<T>(eventId: string, initial: T, toPatch: (v: T) => Omit<Even
   const errorText = useErrorText()
   const [value, setValue] = useState<T>(initial)
   const initialKey = JSON.stringify(initial)
-  useEffect(() => {
-    setValue(JSON.parse(initialKey) as T)
-  }, [initialKey])
   const dirty = JSON.stringify(value) !== initialKey
   const save = useMutation({
     mutationFn: () => updateEventSettings(eventId, toPatch(value)),

@@ -77,11 +77,6 @@ export function ZoneHomePage() {
     return { waiting, coming, parked }
   }, [visits])
 
-  // Default tab: Waiting when it has vehicles, else Coming. Decided once per zone.
-  useEffect(() => {
-    if (tab === null && visitsQuery.isSuccess) setTab(groups.waiting.length > 0 ? 'waiting' : 'coming')
-  }, [tab, visitsQuery.isSuccess, groups.waiting.length])
-
   // New vehicle in Waiting: toast and a short vibration (docs/07 section 4.1).
   const seenWaiting = useRef<Set<string> | null>(null)
   useEffect(() => {
@@ -194,7 +189,7 @@ export function ZoneHomePage() {
   }
 
   const loading = mapLoading || visitsQuery.isLoading
-  const tabValue: ZoneTab = tab ?? 'waiting'
+  const tabValue: ZoneTab = tab ?? (groups.waiting.length > 0 ? 'waiting' : 'coming')
   const tabs: { key: ZoneTab; list: ZoneVisit[] }[] = [
     { key: 'waiting', list: groups.waiting },
     { key: 'coming', list: groups.coming },
@@ -257,8 +252,8 @@ export function ZoneHomePage() {
           <Tabs value={tabValue} onValueChange={(v) => setTab(v as ZoneTab)} className="flex flex-col gap-3">
             <TabsList className="-mx-4 w-auto px-2 sm:mx-0 sm:px-0">
               {tabs.map(({ key, list }) => (
-                <TabsTrigger key={key} value={key} className="flex-1">
-                  {t(`zone.tabs.${key}`)}
+                <TabsTrigger key={key} value={key} className="min-w-0 flex-1 shrink gap-1.5 px-1.5 text-body-sm sm:px-3 sm:text-body">
+                  <span className="truncate">{t(`zone.tabs.${key}`)}</span>
                   <span
                     className={cn(
                       'inline-flex h-5 min-w-5 items-center justify-center rounded-sm px-1.5 text-caption tabular-nums',
@@ -323,6 +318,7 @@ export function ZoneHomePage() {
         visit={wrongSlotVisit}
       />
       <ReportParkingSheet
+        key={report.plate ?? 'none'}
         open={report.open}
         onOpenChange={(o) => setReport((r) => ({ ...r, open: o }))}
         eventId={event.id}

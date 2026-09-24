@@ -23,11 +23,11 @@ export function Topbar({ title, admin, alertCount, sos, onOpenMenu }: TopbarProp
           type="button"
           onClick={onOpenMenu}
           aria-label={t('shell.openMenu')}
-          className="inline-flex size-11 shrink-0 items-center justify-center rounded-md text-ink outline-none hover:bg-surface-2 focus-visible:ring-2 focus-visible:ring-focus lg:hidden"
+          className="inline-flex size-11 shrink-0 items-center justify-center rounded-lg text-ink outline-none transition-colors hover:bg-surface-2 focus-visible:ring-2 focus-visible:ring-focus lg:hidden"
         >
           <Menu size={24} strokeWidth={1.75} aria-hidden="true" />
         </button>
-        <h1 className="min-w-0 flex-1 truncate text-h3 text-ink lg:text-h2">{title}</h1>
+        <h1 className="min-w-0 flex-1 truncate text-h3 font-bold tracking-tight text-ink lg:text-h2">{title}</h1>
         <EventSwitcher admin={admin} className="hidden md:flex" />
         <AlertsBell count={alertCount} sos={sos} />
         <AccountMenu />

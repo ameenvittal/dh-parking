@@ -6,14 +6,14 @@
 import type { SlotStatus, VisitStatus } from '@/types/domain'
 
 export const mapColors = {
-  canvas: '#F4F6F9',
+  canvas: '#F8FAFC',
   surface: '#FFFFFF',
-  surface2: '#EEF1F5',
-  line: '#E1E5EB',
-  lineStrong: '#C9CFD8',
-  ink: '#162033',
-  muted: '#5A6475',
-  subtle: '#8A93A3',
+  surface2: '#F1F5F9',
+  line: '#E2E8F0',
+  lineStrong: '#CBD5E1',
+  ink: '#0F172A',
+  muted: '#475569',
+  subtle: '#94A3B8',
   primary: '#1F4FD6',
   danger: '#D63B3B',
   warning: '#B7791F',

@@ -81,7 +81,8 @@
     "timeline": "Timeline",
     "noTimeline": "Nothing recorded yet.",
     "notFound": "This vehicle is not in your zone.",
-    "closePhoto": "Close photo"
+    "closePhoto": "Close photo",
+    "driver": "Driver"
   },
   "timeline": {
     "checked_in": "Checked in",

@@ -259,7 +259,7 @@ function VisitsTable({ rows, onRow }: { rows: VisitSummary[]; onRow: (id: string
   const time = (iso: string | null) => (iso ? formatClock(iso) : '')
   return (
     <div className="overflow-hidden rounded-lg border border-line">
-      <Table>
+      <Table className="whitespace-nowrap">
         <TableHeader>
           <TableRow>
             {(['plate', 'type', 'category', 'slot', 'zone', 'status', 'phone', 'checkedIn', 'parked', 'left', 'gate', 'whatsapp'] as const).map((c) => (

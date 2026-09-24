@@ -11,6 +11,7 @@ import { PlateChip } from '@/components/common/PlateChip'
 import { SlotLabel } from '@/components/common/SlotLabel'
 import { StatusBadge } from '@/components/common/StatusBadge'
 import { VehicleCard } from '@/components/common/VehicleCard'
+import { VehiclePreview } from '@/components/common/VehiclePreview'
 import { IconButton } from '@/components/shell/IconButton'
 import { Alert } from '@/components/ui/Alert'
 import { Badge } from '@/components/ui/Badge'
@@ -96,6 +97,39 @@ export function ComponentsPage() {
         <div className="flex flex-wrap gap-2">
           <Badge>Neutral</Badge><Badge tone="primary">Primary</Badge><Badge tone="success">Live</Badge>
           <Badge tone="warning">Away from slot</Badge><Badge tone="danger">SOS</Badge><Badge tone="outline">Closed</Badge>
+        </div>
+      </Section>
+
+      <Section title="3D Vehicle previews (7 models in 4 colors)">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1">
+            <span className="text-body-sm font-semibold">1. Motorcycle (Red)</span>
+            <VehiclePreview vehicleType="bike" make="Royal Enfield" color="red" plate="KL01AB1234" />
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-body-sm font-semibold">2. Scooter (White)</span>
+            <VehiclePreview vehicleType="bike" make="Honda Activa" color="white" plate="KL02CD5678" />
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-body-sm font-semibold">3. Hatchback Car (Blue)</span>
+            <VehiclePreview vehicleType="car" make="Maruti Swift" color="blue" plate="KL03EF9012" />
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-body-sm font-semibold">4. Sedan Car (Black)</span>
+            <VehiclePreview vehicleType="car" make="Honda City" color="black" plate="KL04GH3456" />
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-body-sm font-semibold">5. SUV EV (Green plate)</span>
+            <VehiclePreview vehicleType="ev" make="Tata Nexon EV" color="green" plate="22BH1234AA" />
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-body-sm font-semibold">6. Bus (Silver)</span>
+            <VehiclePreview vehicleType="bus" make="Volvo" color="silver" plate="KL06KL7890" />
+          </div>
+          <div className="flex flex-col gap-1 sm:col-span-2">
+            <span className="text-body-sm font-semibold">7. Auto-rickshaw / Other (Yellow)</span>
+            <VehiclePreview vehicleType="other" make="Bajaj" color="yellow" plate="KL07MN1234" />
+          </div>
         </div>
       </Section>
 

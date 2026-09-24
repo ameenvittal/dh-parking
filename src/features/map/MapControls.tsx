@@ -25,8 +25,8 @@ function ControlButton({ label, onClick, active, children }: { label: string; on
       aria-pressed={active}
       onClick={onClick}
       className={cn(
-        'flex size-11 items-center justify-center text-ink outline-none transition-colors hover:bg-surface-2 focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-inset',
-        active && 'text-primary',
+        'flex size-11 items-center justify-center text-ink outline-none transition-all duration-150 hover:bg-surface-2 active:scale-95 focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-inset',
+        active && 'text-primary bg-primary-soft',
       )}
     >
       {children}
@@ -46,7 +46,7 @@ export function MapControls({
   const { t } = useTranslation('map')
   const { map } = useMapContext()
   const canSwitch = Boolean(baseLayer && onBaseLayerChange && satelliteAvailable())
-  const groupClass = 'flex flex-col divide-y divide-line overflow-hidden rounded-lg bg-surface shadow-overlay'
+  const groupClass = 'flex flex-col divide-y divide-line overflow-hidden rounded-xl bg-surface shadow-overlay border border-line'
 
   return (
     <div className={cn('pointer-events-none absolute right-3 z-10 flex flex-col gap-2', className ?? 'top-3')}>

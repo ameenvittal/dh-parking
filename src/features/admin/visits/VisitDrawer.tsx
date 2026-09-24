@@ -7,6 +7,7 @@ import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { ErrorState } from '@/components/common/ErrorState'
 import { KeyValue } from '@/components/common/KeyValue'
 import { PlateChip } from '@/components/common/PlateChip'
+import { VehiclePreview } from '@/components/common/VehiclePreview'
 import { StatusBadge } from '@/components/common/StatusBadge'
 import { alertTypeMeta } from '@/components/common/statusMeta'
 import { Badge } from '@/components/ui/Badge'
@@ -55,7 +56,21 @@ export function VisitDrawer({ visitId, onOpenChange }: VisitDrawerProps) {
     <DetailPanel
       open={Boolean(visitId)}
       onOpenChange={onOpenChange}
-      title={d ? <PlateChip plate={d.visit.plate} size="lg" /> : <Skeleton className="h-13 w-48" />}
+      title={
+        d ? (
+          <div className="flex flex-col gap-3 w-full">
+            <VehiclePreview
+              vehicleType={d.visit.vehicle_type}
+              color={d.visit.vehicle_color}
+              make={d.visit.vehicle_make}
+              plate={d.visit.plate}
+            />
+            <PlateChip plate={d.visit.plate} size="lg" />
+          </div>
+        ) : (
+          <Skeleton className="h-13 w-48" />
+        )
+      }
       headerExtra={d ? <StatusBadge status={d.visit.status} vehicleType={d.visit.vehicle_type} /> : null}
       footer={d ? <VisitActions detail={d} /> : undefined}
     >

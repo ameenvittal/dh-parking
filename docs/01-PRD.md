@@ -177,6 +177,7 @@ Priority: P0 = required for first event. P1 = required but can ship a week later
 | F-ALERT-01 | Automatic alerts: not arrived, confirmation pending, location mismatch, overstay | P0 | 69 |
 | F-PWA-01 | Installable PWA for staff, screen wake lock during navigation | P1 | |
 | F-AUDIT-01 | Every visit state change recorded in `visit_events` | P0 | |
+| F-VEH-01 | 3D vehicle preview in vehicle detail screens (top of sheet/drawer) | P1 | |
 
 ## 6. Acceptance criteria (per feature group)
 
@@ -245,6 +246,7 @@ These are fixed. Do not revisit them in code.
 15. **Location accuracy:** phone GPS is 5 to 20 m. The system never claims to know the exact slot from GPS. Location mismatch uses a tolerance (default 40 m) from the slot polygon.
 16. **Demo mode:** the backend is simulated in the browser, WhatsApp is simulated, and Gemini is called through the Vite dev proxy. The RPCs and Edge Functions from `04-BACKEND-SERVICES.md` run in `src/lib/demo/`, persisted in `localStorage` and synced across tabs; each browser tab is one device (session in `sessionStorage`). A "sent" WhatsApp message appears in the simulator at `/sim`. Photo reading goes to `POST /api/extract-vehicle` (the Gemini key stays on the dev server) with a simulated fallback. `DEMO_MODE` in `src/config/app.ts` switches it. Swapping to Supabase means reimplementing the `api.ts` bodies; screens, types, and function names stay the same.
 17. **Admin screens are English only.** Malayalam is for the screens used by drivers and volunteers (driver, gate, zone). The `admin` and `reports` namespaces need no `ml` file (`pnpm i18n:check` does not require one), and the admin shell always shows English.
+18. **Vehicle 3D preview:** Whenever a vehicle detail sheet or drawer opens, a procedural 3D preview rendered with Three.js (lazy loaded) appears above the plate chip. No downloadable 3D models or raw hex colors.
 
 ## 9. Out of scope
 

@@ -196,5 +196,8 @@
       "live": "ലൈവ്",
       "closed": "അവസാനിച്ചു"
     }
+  },
+  "vehicle": {
+    "previewAriaLabel": "{{color}} {{make}} {{type}}, {{plate}}"
   }
 }

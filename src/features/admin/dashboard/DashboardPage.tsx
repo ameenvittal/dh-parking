@@ -125,7 +125,7 @@ function DashboardView({ event }: { event: EventListItem }) {
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-12">
         <section className="flex flex-col overflow-hidden rounded-lg border border-line bg-surface xl:col-span-8">
           <div className="flex h-12 items-center justify-between gap-3 border-b border-line px-4">
-            <h2 className="text-h3 text-ink">{t('admin.dashboard.liveMap')}</h2>
+            <h2 className="text-h3 font-bold text-ink">{t('admin.dashboard.liveMap')}</h2>
             <Link to="/admin/live" className="text-body-sm font-semibold text-primary underline-offset-4 hover:underline">
               {t('admin.dashboard.openLiveMap')}
             </Link>
@@ -187,7 +187,7 @@ function DashboardView({ event }: { event: EventListItem }) {
       </div>
 
       <section className="flex flex-col gap-3">
-        <h2 className="text-h3 text-ink">{t('admin.dashboard.zones')}</h2>
+        <h2 className="text-h3 font-bold text-ink">{t('admin.dashboard.zones')}</h2>
         {s ? (
           s.zones.length === 0 ? (
             <div className="rounded-lg border border-line bg-surface">
@@ -205,15 +205,15 @@ function DashboardView({ event }: { event: EventListItem }) {
 
       {s ? (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <section className="flex flex-col gap-3 rounded-lg border border-line bg-surface p-4">
-            <h2 className="text-h3 text-ink">{t('admin.dashboard.gates')}</h2>
+          <section className="flex flex-col gap-3 rounded-lg border border-line bg-surface p-5">
+            <h2 className="text-h3 font-bold text-ink">{t('admin.dashboard.gates')}</h2>
             {s.gates.length === 0 ? (
               <p className="text-body-sm text-muted">{t('admin.dashboard.noGates')}</p>
             ) : (
               <ul className="divide-y divide-line">
                 {s.gates.map((g) => (
                   <li key={g.id} className="flex items-center justify-between gap-4 py-2.5 text-body-sm">
-                    <span className="text-ink">{g.name}</span>
+                    <span className="font-medium text-ink">{g.name}</span>
                     <span className="flex gap-4 text-muted tabular-nums">
                       <span>{t('admin.dashboard.gateIn', { count: g.checkins_15m })}</span>
                       <span>{t('admin.dashboard.gateOut', { count: g.exits_15m })}</span>
@@ -223,8 +223,8 @@ function DashboardView({ event }: { event: EventListItem }) {
               </ul>
             )}
           </section>
-          <section className="flex flex-col gap-3 rounded-lg border border-line bg-surface p-4">
-            <h2 className="text-h3 text-ink">{t('admin.dashboard.whatsapp')}</h2>
+          <section className="flex flex-col gap-3 rounded-lg border border-line bg-surface p-5">
+            <h2 className="text-h3 font-bold text-ink">{t('admin.dashboard.whatsapp')}</h2>
             <WaStats wa={s.wa} />
           </section>
         </div>
@@ -305,7 +305,7 @@ function TypeIcons({ types }: { types: ZoneRow['vehicle_types'] }) {
 function ZonesTable({ zones, lang, onRow }: { zones: ZoneRow[]; lang: string; onRow: (id: string) => void }) {
   const { t } = useTranslation(['admin', 'common'])
   return (
-    <div className="overflow-hidden rounded-lg border border-line">
+    <div className="overflow-hidden rounded-lg border border-line bg-surface">
       <Table>
         <TableHeader>
           <TableRow>

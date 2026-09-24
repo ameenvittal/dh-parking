@@ -276,7 +276,7 @@ export async function exportExcel(bundle: ReportBundle, t: Translate): Promise<v
       t(`common.enums.category.${v.category}`),
       v.pass_number,
       v.pass_holder_name,
-      v.needs_accessible ? t('admin.common.yes') : t('admin.common.no'),
+      v.needs_accessible ? t('admin.shared.yes') : t('admin.shared.no'),
       v.phone,
       v.driver_name,
       v.entry_gate,
@@ -294,7 +294,7 @@ export async function exportExcel(bundle: ReportBundle, t: Translate): Promise<v
       v.fee_amount,
       t(`admin.paymentMethod.${v.payment_method}`),
       v.ai_plate_confidence,
-      v.ai_edited ? t('admin.common.yes') : t('admin.common.no'),
+      v.ai_edited ? t('admin.shared.yes') : t('admin.shared.no'),
       v.wa_status ? t(`admin.waStatus.${v.wa_status}`) : null,
     ]),
   )

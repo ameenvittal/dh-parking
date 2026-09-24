@@ -22,7 +22,7 @@ export function TableRow({ className, selected, ...props }: ComponentProps<'tr'>
   return (
     <tr
       data-selected={selected || undefined}
-      className={cn('border-b border-line transition-colors hover:bg-canvas data-[selected]:bg-primary-soft', className)}
+      className={cn('border-b border-line transition-colors duration-100 hover:bg-canvas/80 data-[selected]:bg-primary-soft', className)}
       {...props}
     />
   )
@@ -44,7 +44,7 @@ export function TableHead({ className, numeric, ...props }: ComponentProps<'th'>
 export function TableCell({ className, numeric, ...props }: ComponentProps<'td'> & { numeric?: boolean }) {
   return (
     <td
-      className={cn('h-11 px-3 align-middle text-ink', numeric && 'text-right tabular-nums', className)}
+      className={cn('h-12 px-4 align-middle text-ink', numeric && 'text-right tabular-nums', className)}
       {...props}
     />
   )

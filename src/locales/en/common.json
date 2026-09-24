@@ -196,5 +196,8 @@
       "live": "Live",
       "closed": "Closed"
     }
+  },
+  "vehicle": {
+    "previewAriaLabel": "{{color}} {{make}} {{type}}, {{plate}}"
   }
 }

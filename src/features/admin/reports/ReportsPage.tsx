@@ -62,10 +62,13 @@ export function ReportsPage() {
 
   const eventId = params.get('event') ?? selected?.id ?? null
   const event = events.find((e) => e.id === eventId) ?? selected ?? null
-  const range = event ? defaultRange(event) : null
+  // Stable default for display only; queries send null so the backend applies the same default.
+  const range = useMemo(() => (event ? defaultRange(event) : null), [event])
   const tab = (TABS.includes(params.get('tab') as Tab) ? params.get('tab') : 'occupancy') as Tab
-  const from = params.get('from') ?? range?.from ?? ''
-  const to = params.get('to') ?? range?.to ?? ''
+  const fromParam = params.get('from')
+  const toParam = params.get('to')
+  const from = fromParam ?? range?.from ?? ''
+  const to = toParam ?? range?.to ?? ''
   const zoneIds = (params.get('zones') ?? '').split(',').filter(Boolean)
   const interval = (Number(params.get('interval')) || 15) as ReportInterval
   const [showCounts, setShowCounts] = useState(false)
@@ -81,7 +84,7 @@ export function ReportsPage() {
   }
 
   const filters: ReportFilters | null = event
-    ? { eventId: event.id, from, to, zoneIds: zoneIds.length ? zoneIds : null, intervalMin: interval }
+    ? { eventId: event.id, from: fromParam, to: toParam, zoneIds: zoneIds.length ? zoneIds : null, intervalMin: interval }
     : null
   const enabled = Boolean(filters)
   const f = filters ?? { eventId: '' }

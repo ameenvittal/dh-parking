@@ -28,9 +28,9 @@ export function SidebarNav({ collapsed = false, alertCount, sos, onNavigate }: S
             aria-label={collapsed ? label : undefined}
             className={({ isActive }) =>
               cn(
-                'relative flex h-11 items-center gap-3 rounded-md px-3 text-body font-semibold outline-none transition-colors focus-visible:ring-2 focus-visible:ring-focus lg:h-10 lg:text-body-sm',
+                'relative flex h-11 items-center gap-3 rounded-lg px-3.5 text-body font-semibold outline-none transition-all duration-150 focus-visible:ring-2 focus-visible:ring-focus lg:h-10 lg:text-body-sm',
                 collapsed && 'justify-center px-0',
-                isActive ? 'bg-primary-soft text-primary' : 'text-ink hover:bg-surface-2',
+                isActive ? 'bg-primary-soft text-primary' : 'text-ink hover:bg-surface-2 active:scale-[0.98]',
               )
             }
           >

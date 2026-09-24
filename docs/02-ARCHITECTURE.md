@@ -76,6 +76,7 @@ Pin exact versions at scaffold time with `pnpm add <pkg>@<major>` and commit the
 | react-markdown | 10 | Render assistant replies |
 | vite-plugin-pwa | 1 | PWA manifest and service worker |
 | @fontsource-variable/manrope, @fontsource/noto-sans-malayalam, @fontsource/barlow-semi-condensed | latest | Self-hosted fonts |
+| three | 0.186 | Procedural 3D vehicle preview in vehicle detail views |
 
 **Demo mode note (PRD decision 16).** In demo mode these listed packages are not installed yet, because nothing in the browser build needs them: `react-map-gl` (the map uses `maplibre-gl` directly in `BaseMap`), `terra-draw` and its adapter (not installed yet; the map editor adds it here with a reason if it needs it), `libphonenumber-js` (`src/lib/phone.ts` implements the same IN rule: 10 digits starting 6 to 9), `i18next-resources-to-backend` (a small `import.meta.glob` backend in `src/lib/i18n.ts` does the same job), and `browser-image-compression` (the demo photo store in `src/lib/demo/photos.ts` resizes with a canvas). `@supabase/supabase-js` stays installed for the switch back to Supabase. Nothing outside this list was added.
 

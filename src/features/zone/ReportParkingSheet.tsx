@@ -34,26 +34,20 @@ export function ReportParkingSheet({ open, onOpenChange, eventId, plate }: Repor
   const fileRef = useRef<HTMLInputElement>(null)
   const [photo, setPhoto] = useState<File | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
+  const pickPhoto = (f: File | null) => {
+    setPhoto(f)
+    setPreview(f ? URL.createObjectURL(f) : null)
+  }
   const [plateText, setPlateText] = useState(plate ?? '')
   const [reason, setReason] = useState<Reason>('blockingRoad')
   const [note, setNote] = useState('')
 
-  useEffect(() => {
-    if (open) setPlateText(plate ?? '')
-  }, [open, plate])
-
-  useEffect(() => {
-    if (!photo) {
-      setPreview(null)
-      return
-    }
-    const url = URL.createObjectURL(photo)
-    setPreview(url)
-    return () => URL.revokeObjectURL(url)
-  }, [photo])
+  useEffect(() => () => {
+    if (preview) URL.revokeObjectURL(preview)
+  }, [preview])
 
   const reset = () => {
-    setPhoto(null)
+    pickPhoto(null)
     setReason('blockingRoad')
     setNote('')
     setPlateText('')
@@ -95,7 +89,7 @@ export function ReportParkingSheet({ open, onOpenChange, eventId, plate }: Repor
             tabIndex={-1}
             onChange={(e) => {
               const f = e.target.files?.[0]
-              if (f) setPhoto(f)
+              if (f) pickPhoto(f)
               e.target.value = ''
             }}
           />

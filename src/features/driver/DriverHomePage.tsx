@@ -13,6 +13,7 @@ import { EmptyState } from '@/components/common/EmptyState'
 import { ErrorState } from '@/components/common/ErrorState'
 import { OfflineBanner } from '@/components/common/OfflineBanner'
 import { PlateChip } from '@/components/common/PlateChip'
+import { VehiclePreview } from '@/components/common/VehiclePreview'
 import { SlotLabel } from '@/components/common/SlotLabel'
 import { StatusBadge } from '@/components/common/StatusBadge'
 import { IconButton } from '@/components/shell/IconButton'
@@ -236,6 +237,10 @@ function DriverHomeMap({ visit, onSos }: DriverHomeMapProps) {
               />
             ) : (
               <>
+                <VehiclePreview
+                  vehicleType={visit.visit.vehicle_type}
+                  plate={visit.visit.plate}
+                />
                 <div className="flex items-start justify-between gap-3">
                   {visit.slot ? (
                     <SlotLabel

@@ -9,6 +9,7 @@ import { EmptyState } from '@/components/common/EmptyState'
 import { ErrorState } from '@/components/common/ErrorState'
 import { KeyValue } from '@/components/common/KeyValue'
 import { PlateChip } from '@/components/common/PlateChip'
+import { VehiclePreview } from '@/components/common/VehiclePreview'
 import { StatusBadge } from '@/components/common/StatusBadge'
 import { vehicleTypeIcon } from '@/components/common/statusMeta'
 import { MobileShell } from '@/components/shell/MobileShell'
@@ -169,11 +170,18 @@ export function ZoneVisitPage() {
           )}
         </button>
       ) : (
-        <div className="-mx-4 flex aspect-4/3 flex-col items-center justify-center gap-2 bg-surface-2 text-muted sm:mx-0 sm:rounded-lg">
-          <ImageOff size={32} strokeWidth={1.75} aria-hidden="true" />
+        <div className="flex h-20 items-center justify-center gap-2 rounded-lg bg-surface-2 text-muted">
+          <ImageOff size={24} strokeWidth={1.75} aria-hidden="true" />
           <span className="text-body">{t('zone.detail.noPhoto')}</span>
         </div>
       )}
+
+      <VehiclePreview
+        vehicleType={visit.vehicle_type}
+        color={visit.vehicle_color}
+        make={visit.vehicle_make}
+        plate={visit.plate}
+      />
 
       <div className="flex flex-wrap items-center justify-between gap-3">
         <PlateChip plate={visit.plate} size="lg" />
@@ -206,7 +214,7 @@ export function ZoneVisitPage() {
           <KeyValue label={t('zone.detail.phone')} value={<span className="tabular-nums">{d.driver.phone_masked}</span>} />
         ) : null}
         <KeyValue
-          label={t('common.enums.visitStatus.driver_parked')}
+          label={t('zone.detail.driver')}
           value={
             visit.driver_parked_at
               ? visit.driver_parked_distance_m !== null

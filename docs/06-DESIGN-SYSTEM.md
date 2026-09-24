@@ -331,3 +331,8 @@ Floating stack at right, 12 px from edge: zoom in, zoom out, recenter, layers. E
 ## 11. Icons
 
 lucide-react only, stroke width 1.75, sizes 16 (inline), 20 (buttons, controls), 24 (top bar). Icons in `text-muted` unless they are status icons or inside a primary button.
+
+## 12. Vehicle preview (F-VEH-01 exception)
+
+Vehicle detail sheets and drawers display a procedural low-poly 3D vehicle preview. This is an explicit user request exception to the "no illustrations" and "no entrance animation" guidelines in Section 1 and Section 8, restricted solely to vehicle detail headers.
+

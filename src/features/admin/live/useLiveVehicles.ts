@@ -25,7 +25,6 @@ export function useLiveVehicles(eventId: string | null) {
     enabled: Boolean(eventId),
   })
   const positions = useRef(new Map<string, Position>())
-  const [tick, setTick] = useState(0)
 
   const onVisits = useCallback(() => {
     if (eventId) void qc.invalidateQueries({ queryKey: queryKeys.liveVehicles(eventId) })
@@ -46,30 +45,39 @@ export function useLiveVehicles(eventId: string | null) {
     }
   })
 
+  const [vehicles, setVehicles] = useState<LiveVehicleView[]>([])
   useEffect(() => {
-    const id = setInterval(() => setTick((n) => n + 1), FLUSH_MS)
-    return () => clearInterval(id)
-  }, [])
+    const run = () => setVehicles(merge(seed.data ?? [], positions.current, Date.now()))
+    const first = setTimeout(run, 0)
+    const id = setInterval(run, FLUSH_MS)
+    return () => {
+      clearTimeout(first)
+      clearInterval(id)
+    }
+  }, [seed.data])
 
-  const now = Date.now()
-  const vehicles: LiveVehicleView[] = []
-  for (const v of seed.data ?? []) {
+  return { vehicles, isLoading: seed.isLoading, error: seed.error }
+}
+
+function merge(seed: LiveVehicle[], positions: Map<string, Position>, now: number): LiveVehicleView[] {
+  const out: LiveVehicleView[] = []
+  for (const v of seed) {
     if (v.status !== 'assigned' && v.status !== 'en_route' && v.status !== 'driver_parked') continue
-    const p = positions.current.get(v.visit_id)
+    const p = positions.get(v.visit_id)
     const seedAt = new Date(v.at).getTime()
-    const useLive = p && p.t >= seedAt
-    const atMs = useLive ? p.t : seedAt
+    const live = p && p.t >= seedAt ? p : null
+    const atMs = live ? live.t : seedAt
     const age = now - atMs
     if (age > HIDE_AFTER_MS) continue
-    vehicles.push({
+    out.push({
       ...v,
-      lng: useLive ? p.lng : v.lng,
-      lat: useLive ? p.lat : v.lat,
+      lng: live ? live.lng : v.lng,
+      lat: live ? live.lat : v.lat,
       at: new Date(atMs).toISOString(),
       atMs,
-      speed: useLive ? p.spd : null,
+      speed: live ? live.spd : null,
       faded: age > FADE_AFTER_MS,
     })
   }
-  return { vehicles, isLoading: seed.isLoading, error: seed.error, tick }
+  return out
 }

@@ -234,7 +234,7 @@ function ZoneDetail({ zone, slots, onChanged }: { zone: ZoneWithCounts; slots: S
         </div>
       ) : wide ? (
         <div className="overflow-hidden rounded-lg border border-line">
-          <Table wrapperClassName="max-h-160">
+          <Table wrapperClassName="max-h-160" className="whitespace-nowrap">
             <TableHeader>
               <TableRow>
                 <TableHead className="w-10">

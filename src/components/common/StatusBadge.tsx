@@ -26,7 +26,7 @@ export function StatusBadge({ status, vehicleType, className }: StatusBadgeProps
   return (
     <span
       className={cn(
-        'inline-flex h-6 shrink-0 items-center gap-1 rounded-sm px-2 text-caption whitespace-nowrap',
+        'inline-flex h-6 shrink-0 items-center gap-1.5 rounded-full px-2.5 text-caption font-semibold whitespace-nowrap',
         meta.soft,
         meta.text,
         className,
