@@ -939,6 +939,7 @@ export function reportWrongParking(input: ReportWrongParkingInput): { alert_id: 
       location: [input.lng, input.lat],
       photo_path: input.photoPath,
       raised_by_profile: caller.profile?.id ?? null,
+      ...((plate ? { reported_plate: plate } : {}) as Partial<AlertRow>),
     })
     touch('alerts')
     return { alert_id: alert.id }
@@ -981,7 +982,7 @@ function toAlertView(db: DemoDb, a: AlertRow): AlertView {
   const profile = a.raised_by_profile ? db.profiles.find((p) => p.id === a.raised_by_profile) : undefined
   return {
     ...a,
-    plate: visit?.plate ?? null,
+    plate: visit?.plate ?? (a as AlertRow & { reported_plate?: string | null }).reported_plate ?? null,
     slot_label: slot?.label ?? null,
     zone_code: zone?.code ?? null,
     raised_by_label: a.raised_by_driver ? 'Driver' : profile ? profile.full_name : 'System',

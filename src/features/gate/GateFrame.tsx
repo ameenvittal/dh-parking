@@ -5,6 +5,7 @@ import { Skeleton } from '@/components/ui/Skeleton'
 import { EmptyState } from '@/components/common/EmptyState'
 import { ErrorState } from '@/components/common/ErrorState'
 import { IconButton } from '@/components/shell/IconButton'
+import { LanguageDropdown } from '@/components/common/LanguageDropdown'
 import { MobileShell } from '@/components/shell/MobileShell'
 import { TopBar } from '@/components/shell/TopBar'
 import type { EventMapData, EventRow, SlotStatus } from '@/types/domain'
@@ -45,11 +46,14 @@ export function GateFrame({ title, back, withStatuses = false, children }: GateF
       subtitle={ctx.event?.name}
       back={back}
       trailing={
-        <IconButton
-          label={t('common.actions.menu')}
-          onClick={() => setMenuOpen(true)}
-          icon={<Menu size={24} strokeWidth={1.75} aria-hidden="true" />}
-        />
+        <>
+          <LanguageDropdown />
+          <IconButton
+            label={t('common.actions.menu')}
+            onClick={() => setMenuOpen(true)}
+            icon={<Menu size={24} strokeWidth={1.75} aria-hidden="true" />}
+          />
+        </>
       }
     />
   )

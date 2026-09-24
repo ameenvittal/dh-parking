@@ -7,23 +7,21 @@ import { toast } from 'sonner'
 import { ErrorState } from '@/components/common/ErrorState'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
-import { Chip } from '@/components/ui/Chip'
 import { Field } from '@/components/ui/Field'
 import { Input } from '@/components/ui/Input'
 import { SegmentedControl } from '@/components/ui/SegmentedControl'
 import { Select } from '@/components/ui/Select'
 import { Skeleton } from '@/components/ui/Skeleton'
-import { SwitchRow } from '@/components/ui/SwitchRow'
 import { useErrorText } from '@/hooks/useErrorText'
 import type { EventListItem, TestMessageResult } from '@/lib/demo/types'
 import { formatPhone, normalizeIndianPhone } from '@/lib/phone'
 import { queryKeys } from '@/lib/queryKeys'
-import { VEHICLE_TYPES, VISITOR_CATEGORIES, type BaseMapKind, type EventRow, type Language, type WaTemplate } from '@/types/domain'
+import type { BaseMapKind, EventRow, Language, WaTemplate } from '@/types/domain'
 import { ADMIN_BTN } from '../components/buttonSizes'
 import { RequireEvent } from '../components/RequireEvent'
 import { getEventSettings, sendTestMessage, updateEventSettings, type EventInput } from './api'
 
-const SECTIONS = ['event', 'timings', 'location', 'emergency', 'map', 'whatsapp', 'language'] as const
+const SECTIONS = ['timings', 'location', 'emergency', 'map', 'whatsapp', 'language'] as const
 const TEMPLATES: WaTemplate[] = ['parking_slot_assigned', 'parking_login_link', 'parking_slot_changed', 'sos_admin_alert']
 
 /** Settings `/admin/settings` (docs/07 section 5.11, F-ADM-07). */
@@ -51,7 +49,6 @@ function SettingsView({ event: listed }: { event: EventListItem }) {
         </ul>
       </nav>
       <div className="flex max-w-3xl min-w-0 flex-1 flex-col gap-6">
-        <EventSection key={e.updated_at} e={e} />
         <TimingsSection key={e.updated_at} e={e} />
         <LocationSection key={e.updated_at} e={e} />
         <EmergencySection key={e.updated_at} e={e} />
@@ -120,53 +117,6 @@ function num(v: string): number {
   return Number.isFinite(n) && n >= 0 ? Math.round(n) : NaN
 }
 
-function EventSection({ e }: { e: EventRow }) {
-  const { t } = useTranslation(['admin', 'common'])
-  const s = useSection(
-    e.id,
-    { paid: e.paid_parking, fees: Object.fromEntries(VEHICLE_TYPES.map((ty) => [ty, String(e.fee_rules[ty] ?? 0)])), free: e.fee_exempt_categories },
-    (v) => ({
-      paid_parking: v.paid,
-      fee_rules: Object.fromEntries(VEHICLE_TYPES.map((ty) => [ty, num(v.fees[ty] ?? '0') || 0])) as EventRow['fee_rules'],
-      fee_exempt_categories: v.free,
-    }),
-  )
-  const invalid = VEHICLE_TYPES.some((ty) => Number.isNaN(num(s.value.fees[ty] ?? '')))
-  return (
-    <Section id="event" dirty={s.dirty} saving={s.save.isPending} canSave={!invalid} onSave={() => s.save.mutate()}>
-      <SwitchRow label={t('admin.settings.paidParking')} description={t('admin.settings.paidParkingHelp')} checked={s.value.paid} onCheckedChange={(paid) => s.setValue({ ...s.value, paid })} />
-      <Field label={t('admin.settings.feePerType')} error={invalid ? t('admin.settings.numberInvalid') : null}>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
-          {VEHICLE_TYPES.map((ty) => (
-            <label key={ty} className="flex flex-col gap-1 text-body-sm text-muted">
-              {t(`common.enums.vehicleType.${ty}`)}
-              <Input
-                type="number"
-                min={0}
-                inputMode="numeric"
-                value={s.value.fees[ty] ?? ''}
-                disabled={!s.value.paid}
-                onChange={(ev) => s.setValue({ ...s.value, fees: { ...s.value.fees, [ty]: ev.target.value } })}
-              />
-            </label>
-          ))}
-        </div>
-      </Field>
-      <Field label={t('admin.settings.freeCategories')}>
-        <div className="flex flex-wrap gap-2">
-          {VISITOR_CATEGORIES.map((c) => {
-            const on = s.value.free.includes(c)
-            return (
-              <Chip key={c} selected={on} onClick={() => s.setValue({ ...s.value, free: on ? s.value.free.filter((x) => x !== c) : [...s.value.free, c] })}>
-                {t(`common.enums.category.${c}`)}
-              </Chip>
-            )
-          })}
-        </div>
-      </Field>
-    </Section>
-  )
-}
 
 function NumberField({ id, label, helper, value, onChange }: { id: string; label: string; helper?: string; value: string; onChange: (v: string) => void }) {
   const { t } = useTranslation('admin')

@@ -6,6 +6,7 @@ import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { EmptyState } from '@/components/common/EmptyState'
 import { ErrorState } from '@/components/common/ErrorState'
 import { IconButton } from '@/components/shell/IconButton'
+import { LanguageDropdown } from '@/components/common/LanguageDropdown'
 import { MobileShell } from '@/components/shell/MobileShell'
 import { TopBar } from '@/components/shell/TopBar'
 import { Skeleton } from '@/components/ui/Skeleton'
@@ -66,19 +67,22 @@ export function CheckinPage() {
           ) : undefined
         }
         trailing={
-          isDone ? (
-            <IconButton
-              label={t('common.actions.close')}
-              icon={<X size={24} strokeWidth={1.75} aria-hidden="true" />}
-              onClick={handleDiscard}
-            />
-          ) : (
-            <IconButton
-              label={t('common.actions.cancel')}
-              icon={<X size={24} strokeWidth={1.75} aria-hidden="true" />}
-              onClick={() => setDiscardOpen(true)}
-            />
-          )
+          <>
+            <LanguageDropdown />
+            {isDone ? (
+              <IconButton
+                label={t('common.actions.close')}
+                icon={<X size={24} strokeWidth={1.75} aria-hidden="true" />}
+                onClick={handleDiscard}
+              />
+            ) : (
+              <IconButton
+                label={t('common.actions.cancel')}
+                icon={<X size={24} strokeWidth={1.75} aria-hidden="true" />}
+                onClick={() => setDiscardOpen(true)}
+              />
+            )}
+          </>
         }
       />
       {stepNum ? (

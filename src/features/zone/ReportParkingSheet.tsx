@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Camera, MapPinOff, RotateCcw } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -10,10 +10,13 @@ import { Field } from '@/components/ui/Field'
 import { Input } from '@/components/ui/Input'
 import { RadioGroup, RadioRow } from '@/components/ui/RadioGroup'
 import { Textarea } from '@/components/ui/Textarea'
+import { DEMO_MODE } from '@/config/app'
 import { useLiveLocation } from '@/features/driver/useLiveLocation'
 import { useErrorText } from '@/hooks/useErrorText'
 import { normalizePlate } from '@/lib/plate'
+import { queryKeys } from '@/lib/queryKeys'
 import { reportWrongParking, uploadAlertPhoto } from './api'
+import { useZoneInvalidate } from './useZoneVisits'
 
 const REASONS = ['blockingRoad', 'noParking', 'twoSlots', 'other'] as const
 type Reason = (typeof REASONS)[number]
@@ -30,7 +33,10 @@ type ReportParkingSheetProps = {
 export function ReportParkingSheet({ open, onOpenChange, eventId, plate }: ReportParkingSheetProps) {
   const { t } = useTranslation(['zone', 'common'])
   const errorText = useErrorText()
+  const qc = useQueryClient()
+  const invalidateZone = useZoneInvalidate()
   const { status, fix } = useLiveLocation({ enabled: open })
+  const effectiveFix = fix ?? (DEMO_MODE ? { lng: 75.8355, lat: 11.2585, accuracy: 15, heading: null, speed: null, at: Date.now() } : null)
   const fileRef = useRef<HTMLInputElement>(null)
   const [photo, setPhoto] = useState<File | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
@@ -55,23 +61,26 @@ export function ReportParkingSheet({ open, onOpenChange, eventId, plate }: Repor
 
   const mutation = useMutation({
     mutationFn: async () => {
-      if (!photo || !fix) throw new Error('missing')
+      if (!photo || !effectiveFix) throw new Error('missing')
       const upload = await uploadAlertPhoto(eventId, photo)
       const label = t(`zone.reportSheet.${reason}`)
       const message = note.trim() ? `${label}. ${note.trim()}` : label
       const p = normalizePlate(plateText)
-      return reportWrongParking({ lng: fix.lng, lat: fix.lat, message, photoPath: upload.path, plate: p || null })
+      return reportWrongParking({ lng: effectiveFix.lng, lat: effectiveFix.lat, message, photoPath: upload.path, plate: p || null })
     },
     onSuccess: () => {
       toast.success(t('zone.reportSheet.sent'))
+      invalidateZone(eventId)
+      void qc.invalidateQueries({ queryKey: queryKeys.alerts(eventId) })
+      void qc.invalidateQueries({ queryKey: queryKeys.openAlertCount(eventId) })
       reset()
       onOpenChange(false)
     },
     onError: (err) => toast.error(errorText(err)),
   })
 
-  const locating = !fix && (status === 'idle' || status === 'prompt' || status === 'watching')
-  const locationOff = !fix && (status === 'denied' || status === 'unavailable')
+  const locating = !fix && !DEMO_MODE && (status === 'idle' || status === 'prompt' || status === 'watching')
+  const locationOff = !fix && !DEMO_MODE && (status === 'denied' || status === 'unavailable')
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
@@ -151,7 +160,7 @@ export function ReportParkingSheet({ open, onOpenChange, eventId, plate }: Repor
         </DrawerBody>
         <DrawerFooter>
           {!photo ? <p className="text-center text-body-sm text-muted">{t('zone.reportSheet.photoRequired')}</p> : null}
-          <Button size="lg" block disabled={!photo || !fix} loading={mutation.isPending} onClick={() => mutation.mutate()}>
+          <Button size="lg" block disabled={!photo || !effectiveFix} loading={mutation.isPending} onClick={() => mutation.mutate()}>
             {mutation.isPending && photo ? t('zone.reportSheet.uploading') : t('zone.reportSheet.send')}
           </Button>
         </DrawerFooter>

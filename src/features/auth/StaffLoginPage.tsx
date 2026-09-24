@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Navigate, useLocation, useNavigate } from 'react-router'
-import { LanguageSwitch } from '@/components/common/LanguageSwitch'
 import { OfflineBanner } from '@/components/common/OfflineBanner'
 import { Alert } from '@/components/ui/Alert'
 import { Button } from '@/components/ui/Button'
@@ -134,11 +133,6 @@ export function StaffLoginPage() {
               <DemoAccounts onPick={pick} />
             </>
           ) : null}
-
-          <div className="flex flex-col gap-2">
-            <span className="text-body-sm font-semibold text-ink">{t('language')}</span>
-            <LanguageSwitch />
-          </div>
         </div>
       </main>
     </div>

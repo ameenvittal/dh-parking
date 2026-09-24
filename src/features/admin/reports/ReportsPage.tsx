@@ -206,7 +206,7 @@ export function ReportsPage() {
       </Tabs>
 
       {anyError ? (
-        <ErrorState error={anyError} onRetry={() => [occupancy, peak, revenue, counts].forEach((q) => void q.refetch())} />
+        <ErrorState error={anyError} onRetry={() => [occupancy, peak, counts].forEach((q) => void q.refetch())} />
       ) : !ready ? (
         <div className="flex flex-col gap-4">
           <Skeleton className="h-24 w-full rounded-lg" />
@@ -309,46 +309,6 @@ export function ReportsPage() {
           />
         ) : (
           <NoData />
-        )
-      ) : tab === 'revenue' ? (
-        !revenue.data.paid_parking ? (
-          <EmptyState
-            title={t('reports.revenue.off')}
-            action={
-              <Button asChild variant="secondary" size="md">
-                <Link to="/admin/settings">{t('reports.revenue.openSettings')}</Link>
-              </Button>
-            }
-          />
-        ) : revenue.data.count_paid + revenue.data.count_free === 0 ? (
-          <NoData />
-        ) : (
-          <Panel
-            kpis={
-              <KpiStrip
-                items={[
-                  { key: 'total', label: t('reports.revenue.total'), value: formatInr(revenue.data.total) },
-                  { key: 'paid', label: t('reports.revenue.paid'), value: formatNumber(revenue.data.count_paid) },
-                  { key: 'free', label: t('reports.revenue.free'), value: formatNumber(revenue.data.count_free) },
-                  { key: 'cash', label: t('admin.paymentMethod.cash'), value: formatInr(revenue.data.by_method.find((m) => m.method === 'cash')?.amount ?? 0) },
-                  { key: 'upi', label: t('admin.paymentMethod.upi'), value: formatInr(revenue.data.by_method.find((m) => m.method === 'upi')?.amount ?? 0) },
-                ]}
-              />
-            }
-            chart={<RevenueChart data={revenue.data} amountLabel={t('reports.revenue.amount')} />}
-            table={
-              <div className="grid gap-4 lg:grid-cols-2">
-                <SimpleTable
-                  head={[t('reports.revenue.day'), t('reports.revenue.amount'), t('reports.revenue.vehicles')]}
-                  rows={revenue.data.by_day.map((d) => [d.date, formatInr(d.amount), d.count])}
-                />
-                <SimpleTable
-                  head={[t('reports.revenue.method'), t('reports.revenue.amount'), t('reports.revenue.vehicles')]}
-                  rows={revenue.data.by_method.map((m) => [t(`admin.paymentMethod.${m.method}`), formatInr(m.amount), m.count])}
-                />
-              </div>
-            }
-          />
         )
       ) : counts.data.total === 0 ? (
         <NoData />

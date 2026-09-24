@@ -22,7 +22,6 @@ import { useRealtime } from '@/lib/realtime'
 import { isActiveStatus } from '@/types/domain'
 import { cancelVisit, getVisitDetail, markExit, resendDriverLink } from './api'
 import { ChangeSlotSheet } from './ChangeSlotSheet'
-import { ExitFeeFields, useExitFee } from './ExitFee'
 
 type VehicleActionSheetProps = {
   visitId: string | null
@@ -53,7 +52,6 @@ export function VehicleActionSheet({ visitId, onOpenChange, eventId, gateId }: V
 
   const d = detail.data
   const v = d?.visit
-  const exitFee = useExitFee(eventId, v ?? null)
 
   const refreshLists = () => {
     void qc.invalidateQueries({ queryKey: ['searchVisits'] })
@@ -73,7 +71,6 @@ export function VehicleActionSheet({ visitId, onOpenChange, eventId, gateId }: V
   const doExit = async () => {
     if (!v) return
     try {
-      await exitFee.save(v.id)
       await markExit(v.id, gateId)
       toast.success(t('gate.exit.marked'))
       refreshLists()
@@ -227,9 +224,7 @@ export function VehicleActionSheet({ visitId, onOpenChange, eventId, gateId }: V
         title={t('gate.exit.confirmTitle', { plate: plateText })}
         confirmLabel={t('gate.exit.markExit')}
         onConfirm={doExit}
-      >
-        {exitFee.needed ? <ExitFeeFields fee={exitFee} /> : null}
-      </ConfirmDialog>
+      />
 
       <ConfirmDialog
         open={cancelOpen}

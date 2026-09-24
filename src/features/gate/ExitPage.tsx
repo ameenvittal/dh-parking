@@ -12,7 +12,6 @@ import { useErrorText } from '@/hooks/useErrorText'
 import { formatPlate, formatRelative } from '@/lib/format'
 import { ACTIVE_VISIT_STATUSES, type VisitStatus, type VisitSummary } from '@/types/domain'
 import { extractVehicle, markExit, uploadVehiclePhoto } from './api'
-import { ExitFeeFields, useExitFee } from './ExitFee'
 import { GateFrame, type GateCtx } from './GateFrame'
 import { SearchField } from './SearchField'
 import { useVisitSearch } from './useVisitSearch'
@@ -37,7 +36,6 @@ function ExitView({ ctx }: { ctx: GateCtx }) {
   const [target, setTarget] = useState<VisitSummary | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
   const search = useVisitSearch(ctx.event.id, query, ACTIVE)
-  const fee = useExitFee(ctx.event.id, target)
 
   const onScan = async (file: File | undefined) => {
     if (!file) return
@@ -58,7 +56,6 @@ function ExitView({ ctx }: { ctx: GateCtx }) {
   const doExit = async () => {
     if (!target) return
     try {
-      await fee.save(target.id)
       await markExit(target.id, ctx.gate?.id ?? null)
       toast.success(t('gate.exit.marked'))
       void search.refetch()
@@ -144,9 +141,7 @@ function ExitView({ ctx }: { ctx: GateCtx }) {
         title={t('gate.exit.confirmTitle', { plate: target ? formatPlate(target.plate) : '' })}
         confirmLabel={t('gate.exit.markExit')}
         onConfirm={doExit}
-      >
-        {fee.needed ? <ExitFeeFields fee={fee} /> : null}
-      </ConfirmDialog>
+      />
     </>
   )
 }

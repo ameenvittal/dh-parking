@@ -21,7 +21,7 @@ import { BaseMap } from '@/features/map/BaseMap'
 import { useMapData } from '@/features/map/useMapData'
 import { VisitTimeline } from '@/features/zone/VisitTimeline'
 import { useErrorText } from '@/hooks/useErrorText'
-import { formatClock, formatDateTime, formatInr, formatPlate, localName } from '@/lib/format'
+import { formatClock, formatDateTime, formatPlate, localName } from '@/lib/format'
 import { formatPhone } from '@/lib/phone'
 import { queryKeys } from '@/lib/queryKeys'
 import { useRealtime } from '@/lib/realtime'
@@ -186,10 +186,6 @@ function VisitBody({ detail: d }: { detail: VisitDetail }) {
           <KeyValue label={t('admin.vehicles.drawer.zone')} value={d.zone ? `${d.zone.code} ${localName(d.zone, i18n.language)}` : dash} />
           <KeyValue label={t('admin.vehicles.drawer.gate')} value={d.entry_gate?.name ?? dash} />
           {d.exit_gate ? <KeyValue label={t('admin.vehicles.drawer.exitGate')} value={d.exit_gate.name} /> : null}
-          <KeyValue
-            label={t('admin.vehicles.drawer.fee')}
-            value={`${formatInr(v.fee_amount)}  ${t(`admin.paymentMethod.${v.payment_method}`)}`}
-          />
         </dl>
       </PanelSection>
 

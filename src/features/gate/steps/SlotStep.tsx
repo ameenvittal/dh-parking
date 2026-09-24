@@ -1,19 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { Send } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
-import { Field } from '@/components/ui/Field'
-import { Input } from '@/components/ui/Input'
-import { Label } from '@/components/ui/Label'
-import { SegmentedControl } from '@/components/ui/SegmentedControl'
 import { PlateChip } from '@/components/common/PlateChip'
 import { vehicleTypeIcon } from '@/components/common/statusMeta'
 import { useErrorText } from '@/hooks/useErrorText'
 import { errorCode } from '@/lib/errors'
 import { normalizePlate } from '@/lib/plate'
-import type { EventMapData, EventRow, PaymentMethod } from '@/types/domain'
+import type { EventMapData, EventRow } from '@/types/domain'
 import { gateCheckin } from '../api'
 import { SlotChooser } from '../SlotChooser'
 import { useCheckinStore } from '../store'
@@ -30,18 +26,6 @@ export function SlotStep({ event, eventMap, gateId }: SlotStepProps) {
   const d = store.details
   const [refreshKey, setRefreshKey] = useState(0)
   const TypeIcon = vehicleTypeIcon[d.vehicleType]
-
-  // Fee: prefilled from the event's rule, forced free for exempt categories.
-  const exempt = event.fee_exempt_categories.includes(d.category)
-  const rule = event.fee_rules[d.vehicleType] ?? 0
-  useEffect(() => {
-    if (!event.paid_parking) {
-      store.patch({ fee: { amount: 0, method: 'free' } })
-      return
-    }
-    store.patch({ fee: exempt || rule === 0 ? { amount: 0, method: 'free' } : { amount: rule, method: 'cash' } })
-    // recompute when the vehicle or category changes
-  }, [event.paid_parking, exempt, rule]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const assign = useMutation({
     mutationFn: () => {
@@ -67,8 +51,8 @@ export function SlotStep({ event, eventMap, gateId }: SlotStepProps) {
         ai_result: ai,
         ai_plate_confidence: ai?.plate_confidence ?? null,
         ai_edited: ai ? plate !== normalizePlate(ai.plate ?? '') || s.details.vehicleType !== ai.vehicle_type : false,
-        fee_amount: s.fee.method === 'free' ? 0 : s.fee.amount,
-        payment_method: s.fee.method,
+        fee_amount: 0,
+        payment_method: 'free',
         allow_duplicate: s.allowDuplicate,
         checkin_duration_ms: s.startedAt ? Date.now() - s.startedAt : null,
       })
@@ -94,9 +78,6 @@ export function SlotStep({ event, eventMap, gateId }: SlotStepProps) {
       }
     },
   })
-
-  const fee = store.fee
-  const setFee = (p: Partial<{ amount: number; method: PaymentMethod }>) => store.patch({ fee: { ...fee, ...p } })
 
   return (
     <StepBody
@@ -133,35 +114,6 @@ export function SlotStep({ event, eventMap, gateId }: SlotStepProps) {
         onSelect={(slot) => store.patch({ slot })}
         refreshKey={refreshKey}
       />
-
-      {event.paid_parking ? (
-        <div className="flex flex-col gap-3 rounded-lg border border-line bg-surface p-4">
-          <Label>{t('gate.fee.title')}</Label>
-          <Field
-            label={t('gate.fee.amount')}
-            htmlFor="fee-amount"
-            helper={exempt ? t('gate.fee.freeFor', { category: t(`common.enums.category.${d.category}`) }) : undefined}
-          >
-            <Input
-              id="fee-amount"
-              inputMode="numeric"
-              disabled={exempt || fee.method === 'free'}
-              value={fee.method === 'free' ? '0' : String(fee.amount)}
-              onChange={(e) => setFee({ amount: Number(e.target.value.replace(/\D/g, '')) || 0 })}
-            />
-          </Field>
-          <SegmentedControl<PaymentMethod>
-            ariaLabel={t('gate.fee.method')}
-            value={fee.method}
-            onChange={(method) => setFee({ method, amount: method === 'free' ? 0 : fee.amount || rule })}
-            options={(['cash', 'upi', 'free'] as const).map((m) => ({
-              value: m,
-              label: t(`common.enums.paymentMethod.${m}`),
-              disabled: exempt && m !== 'free',
-            }))}
-          />
-        </div>
-      ) : null}
     </StepBody>
   )
 }

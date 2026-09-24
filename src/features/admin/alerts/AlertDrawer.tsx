@@ -112,16 +112,18 @@ function AlertBody({ alert: a, onOpenVehicle }: { alert: AlertView; onOpenVehicl
         </PanelSection>
       ) : null}
 
-      {a.visit_id && a.plate ? (
+      {a.plate ? (
         <PanelSection title={t('admin.alerts.drawer.vehicle')}>
           <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-line p-3">
             <span className="flex items-center gap-3">
               <PlateChip plate={a.plate} size="md" />
               {a.slot_label ? <span className="font-display text-h3 font-bold tabular-nums">{a.slot_label}</span> : null}
             </span>
-            <Button variant="secondary" size="md" className={ADMIN_BTN} onClick={() => a.visit_id && onOpenVehicle(a.visit_id)}>
-              {t('admin.alerts.drawer.openVehicle')}
-            </Button>
+            {a.visit_id ? (
+              <Button variant="secondary" size="md" className={ADMIN_BTN} onClick={() => a.visit_id && onOpenVehicle(a.visit_id)}>
+                {t('admin.alerts.drawer.openVehicle')}
+              </Button>
+            ) : null}
           </div>
         </PanelSection>
       ) : null}
