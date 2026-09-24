@@ -4,7 +4,6 @@ import type {
   OccupancyReport,
   PeakHoursReport,
   ReportInterval,
-  RevenueReport,
   VehicleCountsReport,
 } from '@/lib/demo/types'
 import type { EventRow } from '@/types/domain'
@@ -17,7 +16,6 @@ export type ReportBundle = {
   filters: { from: string; to: string; zoneLabel: string; intervalMin: ReportInterval }
   occupancy: OccupancyReport
   peak: PeakHoursReport
-  revenue: RevenueReport
   counts: VehicleCountsReport
   visits: ExportVisitRow[]
   alerts: ExportAlertRow[]

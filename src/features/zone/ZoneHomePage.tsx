@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import { EmptyState } from '@/components/common/EmptyState'
 import { ErrorState } from '@/components/common/ErrorState'
 import { KpiStrip } from '@/components/common/KpiStrip'
+import { LanguageDropdown } from '@/components/common/LanguageDropdown'
 import { MobileShell } from '@/components/shell/MobileShell'
 import { TopBar } from '@/components/shell/TopBar'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/DropdownMenu'
@@ -26,6 +27,9 @@ import { useZoneVisits } from './useZoneVisits'
 import { WrongSlotSheet } from './WrongSlotSheet'
 import { ZoneMapView } from './ZoneMapView'
 import { ZoneVehicleCard, type ZoneTab } from './ZoneVehicleCard'
+import { useSosNotifier } from '@/hooks/useSosNotifier'
+import { SosEmergencyBanner } from '@/components/common/SosEmergencyBanner'
+import { useNavigate } from 'react-router'
 
 const ZONE_KEY = 'eventpark.zone'
 
@@ -60,6 +64,16 @@ export function ZoneHomePage() {
   const [zoneId, setZoneId] = useState<string | null>(readStoredZone)
   const activeZone = allowedZones.find((z) => z.id === zoneId) ?? allowedZones[0] ?? null
   const zoneIds = useMemo(() => (activeZone ? [activeZone.id] : []), [activeZone])
+
+  const navigate = useNavigate()
+  const { openSosAlerts } = useSosNotifier({
+    eventId,
+    role: 'zone_volunteer',
+    zoneIds,
+    onAction: (alert) => {
+      if (alert.visit_id) void navigate(`/zone/visit/${alert.visit_id}`)
+    },
+  })
 
   const visitsQuery = useZoneVisits(zoneIds, Boolean(eventId))
   const visits = useMemo(() => visitsQuery.data ?? [], [visitsQuery.data])
@@ -152,7 +166,12 @@ export function ZoneHomePage() {
       leading={zoneSwitcher ?? undefined}
       title={zoneSwitcher ? undefined : title}
       subtitle={zoneSwitcher ? undefined : event?.name}
-      trailing={<StaffMenu />}
+      trailing={
+        <>
+          <LanguageDropdown />
+          <StaffMenu />
+        </>
+      }
     />
   )
 
@@ -196,8 +215,15 @@ export function ZoneHomePage() {
     { key: 'parked', list: groups.parked },
   ]
 
+
   return (
     <MobileShell topBar={topBar} contentClassName="pb-28">
+      <SosEmergencyBanner
+        alerts={openSosAlerts}
+        role="zone_volunteer"
+        emergencyPhone={event?.emergency_phone}
+        className="-mx-4 -mt-4 mb-4 sm:-mx-6 sm:-mt-6"
+      />
       <KpiStrip
         size="compact"
         items={[

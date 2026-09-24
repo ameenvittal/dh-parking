@@ -3,7 +3,6 @@ import {
   Car,
   ChartColumn,
   LayoutDashboard,
-  MessagesSquare,
   PencilRuler,
   Radar,
   Settings,
@@ -25,7 +24,6 @@ export const ADMIN_NAV: AdminNavItem[] = [
   { to: '/admin/zones', labelKey: 'adminNav.zones', icon: SquareParking },
   { to: '/admin/staff', labelKey: 'adminNav.staff', icon: Users },
   { to: '/admin/reports', labelKey: 'adminNav.reports', icon: ChartColumn },
-  { to: '/admin/assistant', labelKey: 'adminNav.assistant', icon: MessagesSquare },
   { to: '/admin/events', labelKey: 'adminNav.events', icon: CalendarDays },
   { to: '/admin/settings', labelKey: 'adminNav.settings', icon: Settings },
 ]

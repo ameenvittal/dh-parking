@@ -14,6 +14,8 @@ import { GateNav } from './GateNav'
 import { GateSwitcher } from './GateSwitcher'
 import { useGateContext } from './useGateContext'
 import type { GateOption } from './useGateSelection'
+import { useSosNotifier } from '@/hooks/useSosNotifier'
+import { SosEmergencyBanner } from '@/components/common/SosEmergencyBanner'
 
 export type GateCtx = {
   event: EventRow
@@ -82,9 +84,15 @@ export function GateFrame({ title, back, withStatuses = false, children }: GateF
     })
   }
 
+  const { openSosAlerts } = useSosNotifier({
+    eventId: ctx.event?.id ?? null,
+    role: 'gate_volunteer',
+  })
+
   return (
     <>
       <MobileShell topBar={topBar} bottomNav={<GateNav />}>
+        <SosEmergencyBanner alerts={openSosAlerts} role="gate_volunteer" emergencyPhone={ctx.event?.emergency_phone} />
         {body}
       </MobileShell>
       <GateMenuSheet open={menuOpen} onOpenChange={setMenuOpen} />

@@ -31,11 +31,6 @@ function rgb(hex: string): RGB {
   return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)]
 }
 
-/** jsPDF Helvetica has no rupee glyph. */
-function inr(n: number): string {
-  return `INR ${formatNumber(n)}`
-}
-
 function nextFrame(): Promise<void> {
   return new Promise((resolve) => requestAnimationFrame(() => resolve()))
 }
@@ -91,7 +86,7 @@ export async function exportPdf(bundle: ReportBundle): Promise<void> {
 
   const [{ jsPDF }, { autoTable }] = await Promise.all([import('jspdf'), import('jspdf-autotable')])
   const doc: JsPdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' })
-  const { event, occupancy, peak, revenue, counts } = bundle
+  const { event, occupancy, peak, counts } = bundle
   const ink = rgb(mapColors.ink)
   const muted = rgb(mapColors.muted)
   const headFill = rgb(mapColors.surface2)
@@ -132,15 +127,6 @@ export async function exportPdf(bundle: ReportBundle): Promise<void> {
     doc.setTextColor(...ink)
     doc.text(text, MARGIN, cur.y + 4)
     cur.y += 7
-  }
-
-  const paragraph = (cur: Cursor, text: string) => {
-    ensureSpace(cur, 8)
-    doc.setFont('helvetica', 'normal')
-    doc.setFontSize(10)
-    doc.setTextColor(...muted)
-    doc.text(text, MARGIN, cur.y + 4)
-    cur.y += 8
   }
 
   const table = (cur: Cursor, head: string[], body: (string | number)[][]) => {
@@ -227,7 +213,6 @@ export async function exportPdf(bundle: ReportBundle): Promise<void> {
           ? t('reports.peak.busiestValue', { window: windowLabel(peak.busiest_exit.t, peak.interval_min, t), count: peak.busiest_exit.count })
           : '-',
       ],
-      [t('reports.excel.revenueTotal'), revenue.paid_parking ? inr(revenue.total) : t('reports.revenue.off')],
     ],
   )
 
@@ -305,29 +290,6 @@ export async function exportPdf(bundle: ReportBundle): Promise<void> {
       ])
       .filter((r) => (r[1] as number) > 0 || (r[2] as number) > 0),
   )
-
-  /* Revenue */
-  heading(cur, t('reports.tabs.revenue'))
-  if (!revenue.paid_parking) {
-    paragraph(cur, t('reports.revenue.off'))
-  } else {
-    await chart(
-      cur,
-      createElement(RevenueChart, { data: revenue, amountLabel: t('reports.revenue.amount'), width: CHART_PX_W, height: CHART_PX_H }),
-    )
-    subheading(cur, t('reports.revenue.byDay'))
-    table(
-      cur,
-      [t('reports.revenue.day'), t('reports.revenue.amount'), t('reports.revenue.vehicles')],
-      revenue.by_day.map((d) => [d.date, inr(d.amount), d.count]),
-    )
-    subheading(cur, t('reports.revenue.byMethod'))
-    table(
-      cur,
-      [t('reports.revenue.method'), t('reports.revenue.amount'), t('reports.revenue.vehicles')],
-      revenue.by_method.map((m) => [t(`admin.paymentMethod.${m.method}`), inr(m.amount), m.count]),
-    )
-  }
 
   /* Vehicle counts */
   heading(cur, t('reports.tabs.counts'))

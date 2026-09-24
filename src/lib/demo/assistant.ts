@@ -1,10 +1,10 @@
 import { AppError } from '@/lib/errors'
-import { formatClock, formatInr, formatPlate } from '@/lib/format'
+import { formatClock, formatPlate } from '@/lib/format'
 import { ALERT_TYPES } from '@/types/domain'
 import type { AlertType, AssistantMessageRow, Language, VehicleType } from '@/types/domain'
 import { liveEvent, requireRole } from './core'
 import { mutate, nextSeq, nowIso, readDb } from './db'
-import { reportPeakHours, reportRevenue, reportVehicleCounts } from './reports'
+import { reportPeakHours, reportVehicleCounts } from './reports'
 import { getDashboardSummary, getVisitDetail, listAlerts, searchVisits } from './rpc'
 import type { AssistantInput, AssistantReply, AssistantToolUse } from './types'
 
@@ -112,17 +112,11 @@ export function answer(input: AssistantInput): AssistantReply {
 
   /* revenue */
   if (/revenue|collect|money|fee|cash|upi|വരുമാനം|ഫീസ്/i.test(lower)) {
-    const r = timed(used, 'get_revenue', {}, () => reportRevenue({ eventId: ev.id }))
-    if (!r.paid_parking)
-      return { reply: tr(lang, { en: 'Paid parking is off for this event.', ml: 'ഈ പരിപാടിക്ക് പണമടച്ചുള്ള പാർക്കിംഗ് ഇല്ല.' }), tools_used: used }
     return {
-      reply: [
-        tr(lang, { en: `Collected **${formatInr(r.total)}** from ${r.count_paid} vehicles (${r.count_free} free).`, ml: `${r.count_paid} വാഹനങ്ങളിൽ നിന്ന് **${formatInr(r.total)}** ലഭിച്ചു (${r.count_free} സൗജന്യം).` }),
-        '',
-        '| Payment method | Amount | Vehicles |',
-        '|:---|---:|---:|',
-        ...r.by_method.map((m) => `| ${m.method} | ${formatInr(m.amount)} | ${m.count} |`),
-      ].join('\n'),
+      reply: tr(lang, {
+        en: 'Parking is completely free for this event. No fee is collected.',
+        ml: 'ഈ പരിപാടിക്ക് പാർക്കിംഗ് പൂർണ്ണമായും സൗജന്യമാണ്. ഫീസ് ഈടാക്കുന്നില്ല.',
+      }),
       tools_used: used,
     }
   }

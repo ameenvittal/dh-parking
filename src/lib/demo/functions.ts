@@ -353,13 +353,34 @@ const SOS_REASON_EN: Record<RaiseSosInput['reason'], string> = {
 
 export function raiseSos(input: RaiseSosInput): SosResult {
   return mutate((db, touch) => {
-    const caller = requireRole(db, ['driver'])
+    const caller = requireRole(db, ['driver', 'admin', 'zone_volunteer', 'gate_volunteer'])
     const { alert, created, emergency_phone } = raiseSosCore(db, caller, input)
     if (created) {
       const ev = eventById(db, alert.event_id)
       const visit = alert.visit_id ? db.visits.find((v) => v.id === alert.visit_id) : undefined
-      const driver = db.drivers.find((d) => d.id === alert.raised_by_driver)
+      const driver = alert.raised_by_driver ? db.drivers.find((d) => d.id === alert.raised_by_driver) : undefined
+
+      const recipientPhones = new Set<string>()
+      // 1. Event admin alert phones
       for (const to of ev.admin_alert_phones) {
+        if (to) recipientPhones.add(to)
+      }
+      // 2. Admin profiles
+      for (const p of db.profiles.filter((p) => p.role === 'admin' && p.is_active && p.phone)) {
+        if (p.phone) recipientPhones.add(p.phone)
+      }
+      // 3. Gate volunteers
+      for (const gv of db.profiles.filter((p) => p.role === 'gate_volunteer' && p.is_active && p.phone)) {
+        if (gv.phone) recipientPhones.add(gv.phone)
+      }
+      // 4. Zone volunteers (for this zone or all)
+      for (const zv of db.profiles.filter((p) => p.role === 'zone_volunteer' && p.is_active && p.phone)) {
+        if (!alert.zone_id || zv.zone_ids.length === 0 || zv.zone_ids.includes(alert.zone_id)) {
+          if (zv.phone) recipientPhones.add(zv.phone)
+        }
+      }
+
+      for (const to of recipientPhones) {
         sendTemplate(db, {
           event_id: ev.id,
           driver_id: null,

@@ -13,6 +13,10 @@ import { Sidebar } from './Sidebar'
 import { Topbar } from './Topbar'
 import { useAdminEvent } from './useAdminEvent'
 import { useOpenAlertCount } from './useOpenAlertCount'
+import { useSosNotifier } from '@/hooks/useSosNotifier'
+import { SosEmergencyBanner } from '@/components/common/SosEmergencyBanner'
+import { useNavigate } from 'react-router'
+import { FloatingAssistant } from '../assistant/FloatingAssistant'
 
 const COLLAPSE_KEY = 'eventpark.sidebarCollapsed'
 
@@ -63,11 +67,21 @@ export function AdminShell() {
     }
   }
 
+  const navigate = useNavigate()
+  const { openSosAlerts } = useSosNotifier({
+    eventId: admin.eventId,
+    role: 'admin',
+    onAction: (alert) => {
+      void navigate(`/admin/alerts?id=${alert.id}`)
+    },
+  })
+
   return (
     <div className="flex h-app overflow-hidden bg-canvas">
       <Sidebar collapsed={collapsed} onToggle={toggle} alertCount={count} sos={sos} />
       <div className="flex min-w-0 flex-1 flex-col">
         <Topbar title={title} admin={admin} alertCount={count} sos={sos} onOpenMenu={() => setMenuOpen(true)} />
+        <SosEmergencyBanner alerts={openSosAlerts} role="admin" emergencyPhone={admin.event?.emergency_phone} />
         <OfflineBanner />
         <main
           className={cn(
@@ -100,6 +114,7 @@ export function AdminShell() {
         />
       </div>
       <MobileNavSheet open={menuOpen} onOpenChange={setMenuOpen} admin={admin} alertCount={count} sos={sos} />
+      <FloatingAssistant />
     </div>
   )
 }

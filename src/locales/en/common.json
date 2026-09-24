@@ -199,5 +199,14 @@
   },
   "vehicle": {
     "previewAriaLabel": "{{color}} {{make}} {{type}}, {{plate}}"
+  },
+  "sosEmergency": {
+    "title": "Emergency SOS active",
+    "toast": "SOS: {{reason}} — {{plate}}",
+    "viewAlert": "View alert",
+    "viewVehicle": "View vehicle",
+    "helpline": "Helpline: {{phone}}",
+    "unknownVehicle": "Vehicle",
+    "details": "{{reason}} · {{plate}} · {{location}}"
   }
 }

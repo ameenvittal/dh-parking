@@ -69,7 +69,7 @@ export async function exportExcel(bundle: ReportBundle, t: Translate): Promise<v
   wb.creator = 'EventPark'
   wb.created = new Date()
 
-  const { event, occupancy, peak, revenue, counts } = bundle
+  const { event, occupancy, peak, counts } = bundle
   const stats = occupancyStats(occupancy, event)
   const peakZone = stats.reduce<(typeof stats)[number] | null>((a, b) => (!a || b.peak_pct > a.peak_pct ? b : a), null)
 
@@ -92,7 +92,6 @@ export async function exportExcel(bundle: ReportBundle, t: Translate): Promise<v
       t('reports.excel.busiestArrival'),
       peak.busiest_arrival ? t('reports.peak.busiestValue', { window: windowLabel(peak.busiest_arrival.t, peak.interval_min, t), count: peak.busiest_arrival.count }) : null,
     ],
-    [t('reports.excel.revenueTotal'), revenue.total],
   ]
   summaryRows.forEach(([k, v], i) => {
     const row = summary.getRow(i + 2)
@@ -178,30 +177,6 @@ export async function exportExcel(bundle: ReportBundle, t: Translate): Promise<v
   freezeTop(ph)
   autoWidth(ph)
 
-  /* Revenue */
-  const rev = wb.addWorksheet(t('reports.tabs.revenue'))
-  next = addTable(
-    rev,
-    1,
-    [t('reports.occupancy.zone'), t('reports.revenue.amount'), t('reports.revenue.vehicles')],
-    revenue.by_zone.map((z) => [`${z.code} ${z.name}`, z.amount, z.count]),
-  )
-  next = addTable(
-    rev,
-    next,
-    [t('reports.revenue.day'), t('reports.revenue.amount'), t('reports.revenue.vehicles')],
-    revenue.by_day.map((d) => [d.date, d.amount, d.count]),
-  )
-  addTable(
-    rev,
-    next,
-    [t('reports.revenue.method'), t('reports.revenue.amount'), t('reports.revenue.vehicles')],
-    revenue.by_method.map((m) => [t(`admin.paymentMethod.${m.method}`), m.amount, m.count]),
-  )
-  rev.getColumn(2).numFmt = '#,##0'
-  freezeTop(rev)
-  autoWidth(rev)
-
   /* Vehicle counts */
   const vc = wb.addWorksheet(t('reports.tabs.counts'))
   next = addTable(
@@ -262,8 +237,6 @@ export async function exportExcel(bundle: ReportBundle, t: Translate): Promise<v
       t('reports.raw.confirmedBy'),
       t('reports.raw.exited'),
       t('reports.raw.exitGate'),
-      t('reports.raw.fee'),
-      t('reports.raw.paymentMethod'),
       t('reports.raw.aiConfidence'),
       t('reports.raw.aiEdited'),
       t('reports.raw.whatsapp'),
@@ -291,8 +264,6 @@ export async function exportExcel(bundle: ReportBundle, t: Translate): Promise<v
       v.confirmed_by,
       excelDate(v.exited_at),
       v.exit_gate,
-      v.fee_amount,
-      t(`admin.paymentMethod.${v.payment_method}`),
       v.ai_plate_confidence,
       v.ai_edited ? t('admin.shared.yes') : t('admin.shared.no'),
       v.wa_status ? t(`admin.waStatus.${v.wa_status}`) : null,

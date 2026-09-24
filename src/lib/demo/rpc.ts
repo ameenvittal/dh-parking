@@ -762,23 +762,37 @@ export function raiseSosCore(
   caller: Caller,
   input: { reason: AlertRow['sos_reason']; message: string | null; lng: number | null; lat: number | null },
 ): { alert: AlertRow; created: boolean; emergency_phone: string | null } {
-  const driverId = caller.session.driverId
-  const ev = eventById(db, caller.session.eventId ?? '')
-  const open = db.alerts.find((a) => a.type === 'sos' && a.raised_by_driver === driverId && a.status !== 'resolved')
-  if (open) return { alert: open, created: false, emergency_phone: ev.emergency_phone }
-  const v = driverVisit(db, caller)
+  const driverId = caller.session.driverId ?? null
+  const eventId = caller.session.eventId ?? (db.events.find((e) => e.status === 'live')?.id ?? db.events[0]?.id ?? '')
+  const ev = eventById(db, eventId)
+  if (driverId) {
+    const open = db.alerts.find((a) => a.type === 'sos' && a.raised_by_driver === driverId && a.status !== 'resolved')
+    if (open) return { alert: open, created: false, emergency_phone: ev.emergency_phone }
+  } else {
+    const profileId = caller.profile?.id ?? caller.session.userId
+    const open = db.alerts.find((a) => a.type === 'sos' && a.raised_by_profile === profileId && a.status !== 'resolved')
+    if (open) return { alert: open, created: false, emergency_phone: ev.emergency_phone }
+  }
+  const v = driverId ? driverVisit(db, caller) : (db.visits.find((x) => x.event_id === ev.id && isActive(x.status)) ?? null)
   const active = v && isActive(v.status) ? v : null
-  const location: LngLat | null = input.lng != null && input.lat != null ? [input.lng, input.lat] : null
+  const location: LngLat | null =
+    input.lng != null && input.lat != null
+      ? [input.lng, input.lat]
+      : active?.last_position
+        ? active.last_position
+        : null
+  const zoneId = active?.zone_id ?? caller.session.zoneIds?.[0] ?? null
   const { alert } = insertAlert(db, {
     event_id: ev.id,
     type: 'sos',
     visit_id: active?.id ?? null,
     slot_id: active?.slot_id ?? null,
-    zone_id: active?.zone_id ?? null,
+    zone_id: zoneId,
     sos_reason: input.reason,
     message: input.message?.trim() || null,
     location,
     raised_by_driver: driverId,
+    raised_by_profile: driverId ? null : (caller.profile?.id ?? caller.session.userId),
   })
   if (active) logVisitEvent(db, active, 'sos', { alert_id: alert.id, reason: input.reason }, caller.actor)
   return { alert, created: true, emergency_phone: ev.emergency_phone }
@@ -994,7 +1008,7 @@ function alertVisible(caller: Caller, a: AlertRow): boolean {
   const role = caller.session.role
   if (role === 'admin') return true
   if (role === 'gate_volunteer') return a.type === 'sos' || a.type === 'wrong_parking'
-  if (role === 'zone_volunteer') return currentZoneIds(caller).includes(a.zone_id ?? '')
+  if (role === 'zone_volunteer') return a.type === 'sos' || currentZoneIds(caller).includes(a.zone_id ?? '')
   return false
 }
 

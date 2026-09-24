@@ -589,6 +589,7 @@
   "assistant": {
     "title": "Assistant",
     "newChat": "New chat",
+    "expand": "Open full screen",
     "emptyTitle": "Ask about parking right now.",
     "suggestions": {
       "fullest": "Which zone is almost full?",

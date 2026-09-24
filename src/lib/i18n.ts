@@ -85,7 +85,7 @@ void i18n
       lookupLocalStorage: DEFAULTS.langStorageKey,
       caches: ['localStorage'],
     },
-    react: { useSuspense: true },
+    react: { useSuspense: true, bindI18n: 'languageChanged loaded', bindI18nStore: 'added' },
   })
 
 applyHtmlLang(i18n.resolvedLanguage ?? 'en')

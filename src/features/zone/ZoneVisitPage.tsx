@@ -8,6 +8,7 @@ import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { EmptyState } from '@/components/common/EmptyState'
 import { ErrorState } from '@/components/common/ErrorState'
 import { KeyValue } from '@/components/common/KeyValue'
+import { LanguageDropdown } from '@/components/common/LanguageDropdown'
 import { PlateChip } from '@/components/common/PlateChip'
 import { VehiclePreview } from '@/components/common/VehiclePreview'
 import { StatusBadge } from '@/components/common/StatusBadge'
@@ -29,6 +30,8 @@ import { useNow } from './useNow'
 import { useZoneInvalidate } from './useZoneVisits'
 import { VisitTimeline } from './VisitTimeline'
 import { WrongSlotSheet } from './WrongSlotSheet'
+import { useSosNotifier } from '@/hooks/useSosNotifier'
+import { SosEmergencyBanner } from '@/components/common/SosEmergencyBanner'
 
 const CONFIRMABLE = new Set(['assigned', 'en_route', 'driver_parked'])
 
@@ -60,6 +63,11 @@ export function ZoneVisitPage() {
 
   const visit = detail.data?.visit
   const eventId = visit?.event_id ?? null
+
+  const { openSosAlerts } = useSosNotifier({
+    eventId,
+    role: 'zone_volunteer',
+  })
 
   const confirm = useMutation({
     mutationFn: () => confirmParked({ visitId: id }),
@@ -109,7 +117,18 @@ export function ZoneVisitPage() {
       </DropdownMenu>
     ) : null
 
-  const topBar = <TopBar back="/zone" title={title} trailing={menu} />
+  const topBar = (
+    <TopBar
+      back="/zone"
+      title={title}
+      trailing={
+        <>
+          <LanguageDropdown />
+          {menu}
+        </>
+      }
+    />
+  )
 
   if (detail.isLoading) {
     return (
@@ -156,6 +175,11 @@ export function ZoneVisitPage() {
         ) : undefined
       }
     >
+      <SosEmergencyBanner
+        alerts={openSosAlerts}
+        role="zone_volunteer"
+        className="-mx-4 -mt-4 mb-4 sm:-mx-6 sm:-mt-6"
+      />
       {photoPath ? (
         <button
           type="button"

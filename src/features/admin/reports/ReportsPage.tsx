@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { FileSpreadsheet, FileText } from 'lucide-react'
 import { useMemo, useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, useSearchParams } from 'react-router'
+import { useSearchParams } from 'react-router'
 import { toast } from 'sonner'
 import { EmptyState } from '@/components/common/EmptyState'
 import { ErrorState } from '@/components/common/ErrorState'
@@ -15,7 +15,7 @@ import { SwitchRow } from '@/components/ui/SwitchRow'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/Tabs'
 import { useErrorText } from '@/hooks/useErrorText'
-import { formatDateTime, formatDuration, formatInr, formatNumber } from '@/lib/format'
+import { formatDateTime, formatDuration, formatNumber } from '@/lib/format'
 import { queryKeys } from '@/lib/queryKeys'
 import { VEHICLE_TYPES } from '@/types/domain'
 import { formatInTimeZone } from 'date-fns-tz'
@@ -36,14 +36,13 @@ import {
 import { HorizontalBarChart } from './charts/HorizontalBarChart'
 import { OccupancyChart } from './charts/OccupancyChart'
 import { PeakHoursChart } from './charts/PeakHoursChart'
-import { RevenueChart } from './charts/RevenueChart'
 import { exportExcel } from './exportExcel'
 import { exportPdf } from './exportPdf'
 import type { ReportBundle } from './reportBundle'
 import { defaultRange, hasOccupancyData, hasPeakData, occupancyStats, windowLabel } from './reportMath'
 
-type Tab = 'occupancy' | 'peak' | 'revenue' | 'counts'
-const TABS: Tab[] = ['occupancy', 'peak', 'revenue', 'counts']
+type Tab = 'occupancy' | 'peak' | 'counts'
+const TABS: Tab[] = ['occupancy', 'peak', 'counts']
 
 /** `datetime-local` value in India time. */
 function toLocalInput(iso: string): string {
@@ -90,7 +89,6 @@ export function ReportsPage() {
   const f = filters ?? { eventId: '' }
   const occupancy = useQuery({ queryKey: queryKeys.report('occupancy', f), queryFn: () => reportOccupancy(f), enabled })
   const peak = useQuery({ queryKey: queryKeys.report('peak', f), queryFn: () => reportPeakHours(f), enabled })
-  const revenue = useQuery({ queryKey: queryKeys.report('revenue', f), queryFn: () => reportRevenue(f), enabled })
   const counts = useQuery({ queryKey: queryKeys.report('counts', f), queryFn: () => reportVehicleCounts(f), enabled })
 
   const zoneOptions = useMemo(() => (occupancy.data?.zones ?? []).map((z) => ({ value: z.zone_id, label: `${z.code} ${z.name}` })), [occupancy.data])
@@ -100,7 +98,7 @@ export function ReportsPage() {
       : zoneOptions.filter((o) => zoneIds.includes(o.value)).map((o) => o.label).join(', ')
 
   const runExport = async (kind: 'xlsx' | 'pdf') => {
-    if (!event || !filters || !occupancy.data || !peak.data || !revenue.data || !counts.data) return
+    if (!event || !filters || !occupancy.data || !peak.data || !counts.data) return
     setBusy(kind)
     try {
       const [visits, alerts] = await Promise.all([exportVisits(filters), exportAlerts(filters)])
@@ -109,7 +107,6 @@ export function ReportsPage() {
         filters: { from, to, zoneLabel, intervalMin: interval },
         occupancy: occupancy.data,
         peak: peak.data,
-        revenue: revenue.data,
         counts: counts.data,
         visits,
         alerts,
@@ -127,8 +124,8 @@ export function ReportsPage() {
   if (eventsLoading) return <Skeleton className="h-96 w-full rounded-lg" />
   if (!event) return <EmptyState title={t('admin.shared.noLiveEvent')} />
 
-  const ready = occupancy.data && peak.data && revenue.data && counts.data
-  const anyError = occupancy.error ?? peak.error ?? revenue.error ?? counts.error
+  const ready = occupancy.data && peak.data && counts.data
+  const anyError = occupancy.error ?? peak.error ?? counts.error
 
   return (
     <div className="flex flex-col gap-4">

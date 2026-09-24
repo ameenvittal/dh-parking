@@ -18,6 +18,8 @@ import { SlotStep } from './steps/SlotStep'
 import { useCheckinStore, type CheckinStep } from './store'
 import { useGateContext } from './useGateContext'
 import { VehicleActionSheet } from './VehicleActionSheet'
+import { useSosNotifier } from '@/hooks/useSosNotifier'
+import { SosEmergencyBanner } from '@/components/common/SosEmergencyBanner'
 
 const STEP_NUMBERS: Record<Exclude<CheckinStep, 'done'>, number> = {
   photo: 1,
@@ -127,9 +129,15 @@ export function CheckinPage() {
     )
   }
 
+  const { openSosAlerts } = useSosNotifier({
+    eventId: ctx.event?.id ?? null,
+    role: 'gate_volunteer',
+  })
+
   return (
     <>
       <MobileShell topBar={topBar} bleed={isReady} contentClassName={isReady ? 'max-w-none w-full' : undefined}>
+        <SosEmergencyBanner alerts={openSosAlerts} role="gate_volunteer" emergencyPhone={ctx.event?.emergency_phone} />
         {body}
       </MobileShell>
 

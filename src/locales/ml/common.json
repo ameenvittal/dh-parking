@@ -199,5 +199,14 @@
   },
   "vehicle": {
     "previewAriaLabel": "{{color}} {{make}} {{type}}, {{plate}}"
+  },
+  "sosEmergency": {
+    "title": "സജീവ SOS അടിയന്തരാവസ്ഥ",
+    "toast": "SOS: {{reason}} — {{plate}}",
+    "viewAlert": "അലേർട്ട് കാണുക",
+    "viewVehicle": "വാഹനം കാണുക",
+    "helpline": "ഹെൽപ്പ്‌ലൈൻ: {{phone}}",
+    "unknownVehicle": "വാഹനം",
+    "details": "{{reason}} · {{plate}} · {{location}}"
   }
 }
