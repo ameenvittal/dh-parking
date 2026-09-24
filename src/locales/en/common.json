@@ -1,0 +1,200 @@
+{
+  "appName": "EventPark",
+  "plateCountry": "IND",
+  "actions": {
+    "next": "Next",
+    "back": "Back",
+    "cancel": "Cancel",
+    "save": "Save",
+    "tryAgain": "Try again",
+    "logout": "Log out",
+    "call": "Call",
+    "close": "Close",
+    "confirm": "Confirm",
+    "done": "Done",
+    "copy": "Copy",
+    "copied": "Copied",
+    "search": "Search",
+    "clear": "Clear",
+    "open": "Open",
+    "edit": "Edit",
+    "delete": "Delete",
+    "more": "More",
+    "menu": "Menu",
+    "reload": "Reload",
+    "installApp": "Install app"
+  },
+  "offline": "You're offline. Changes will fail until you reconnect.",
+  "noLiveEvent": "No event is live right now",
+  "noLiveEventBody": "Ask the admin to set an event live.",
+  "language": "Language",
+  "languages": {
+    "en": "English",
+    "ml": "മലയാളം"
+  },
+  "languagesShort": {
+    "en": "EN",
+    "ml": "ML"
+  },
+  "justNow": "Just now",
+  "minAgo_one": "{{count}} min ago",
+  "minAgo_other": "{{count}} min ago",
+  "loading": "Loading…",
+  "slotLabel": "Slot {{label}}",
+  "accessible": "Accessible",
+  "evCharger": "EV charger",
+  "demoMode": "Demo mode",
+  "errorBoundary": {
+    "title": "Something went wrong",
+    "body": "Reload the page to try again. Your data is safe.",
+    "home": "Go to start"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "Check the address, or go back to the start.",
+    "home": "Go to start"
+  },
+  "auth": {
+    "staffSignIn": "Staff sign in",
+    "username": "Username",
+    "password": "Password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "signIn": "Sign in",
+    "demoAccounts": "Demo accounts",
+    "demoHint": "Tap an account to fill in its sign-in details.",
+    "demoRoles": {
+      "admin": "Admin",
+      "gate": "Gate volunteer",
+      "zone": "Zone volunteer"
+    },
+    "mobileNumber": "Mobile number",
+    "countryCode": "+91",
+    "sendAgain": "Send again",
+    "sendAgainIn": "Send again in {{seconds}} s",
+    "openWhatsApp": "Open WhatsApp simulator",
+    "driverNoLink": "Got a parking link on WhatsApp? Tap it to open your parking."
+  },
+  "shell": {
+    "event": "Event",
+    "switchEvent": "Switch event",
+    "noEvents": "No events yet",
+    "alerts": "Alerts",
+    "openAlerts_one": "{{count}} open alert",
+    "openAlerts_other": "{{count}} open alerts",
+    "account": "Account",
+    "openMenu": "Open menu",
+    "collapseSidebar": "Collapse sidebar",
+    "expandSidebar": "Expand sidebar",
+    "mainNav": "Main navigation",
+    "signedInAs": "Signed in as {{name}}"
+  },
+  "adminNav": {
+    "dashboard": "Dashboard",
+    "live": "Live map",
+    "vehicles": "Vehicles",
+    "alerts": "Alerts",
+    "mapEditor": "Map editor",
+    "zones": "Zones and slots",
+    "staff": "Staff",
+    "reports": "Reports",
+    "assistant": "Assistant",
+    "events": "Events",
+    "settings": "Settings",
+    "more": "More",
+    "gateScreens": "Gate screens",
+    "zoneScreens": "Zone screens",
+    "whatsappSim": "WhatsApp simulator"
+  },
+  "enums": {
+    "visitStatus": {
+      "assigned": "Assigned",
+      "en_route": "On the way",
+      "driver_parked": "Waiting for check",
+      "confirmed": "Parked",
+      "exited": "Left",
+      "cancelled": "Cancelled"
+    },
+    "slotStatus": {
+      "available": "Free",
+      "assigned": "Assigned",
+      "occupied": "Parked",
+      "blocked": "Blocked"
+    },
+    "vehicleType": {
+      "bike": "Bike",
+      "car": "Car",
+      "ev": "EV",
+      "bus": "Bus",
+      "other": "Other"
+    },
+    "category": {
+      "vip": "VIP",
+      "guest": "Guest",
+      "faculty": "Faculty",
+      "student": "Student",
+      "staff": "Staff",
+      "volunteer": "Volunteer",
+      "performer": "Performer",
+      "general": "General"
+    },
+    "alertType": {
+      "sos": "SOS",
+      "wrong_slot": "Wrong slot",
+      "location_mismatch": "Away from slot",
+      "wrong_parking": "Wrong parking",
+      "not_arrived": "Not arrived",
+      "confirm_pending": "Confirmation pending",
+      "overstay": "Overstay"
+    },
+    "alertStatus": {
+      "open": "Open",
+      "acknowledged": "Acknowledged",
+      "resolved": "Resolved"
+    },
+    "sosReason": {
+      "medical": "Medical",
+      "breakdown": "Vehicle breakdown",
+      "safety": "Safety",
+      "lost": "Lost",
+      "other": "Other"
+    },
+    "paymentMethod": {
+      "free": "Free",
+      "cash": "Cash",
+      "upi": "UPI"
+    },
+    "waStatus": {
+      "queued": "Sending…",
+      "sent": "Sent",
+      "delivered": "Delivered",
+      "read": "Read",
+      "failed": "Failed"
+    },
+    "gateKind": {
+      "entry": "Entry",
+      "exit": "Exit",
+      "both": "Entry and exit"
+    },
+    "landmarkKind": {
+      "venue": "Venue",
+      "entrance": "Entrance",
+      "help_desk": "Help desk",
+      "first_aid": "First aid",
+      "toilet": "Toilet",
+      "food": "Food",
+      "other": "Other"
+    },
+    "role": {
+      "admin": "Admin",
+      "gate_volunteer": "Gate volunteer",
+      "zone_volunteer": "Zone volunteer",
+      "driver": "Driver"
+    },
+    "eventStatus": {
+      "draft": "Draft",
+      "live": "Live",
+      "closed": "Closed"
+    }
+  }
+}

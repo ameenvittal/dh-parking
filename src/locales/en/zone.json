@@ -1,0 +1,128 @@
+{
+  "title": "Zone vehicles",
+  "switchZone": "Switch zone",
+  "allZones": "All my zones",
+  "noZones": "No zone assigned",
+  "noZonesBody": "Ask the admin to add you to a zone.",
+  "counters": {
+    "free": "Free",
+    "coming": "Coming",
+    "waiting": "Waiting",
+    "parked": "Parked"
+  },
+  "view": {
+    "label": "View",
+    "list": "List",
+    "map": "Map"
+  },
+  "searchPlaceholder": "Search plate",
+  "searchLabel": "Search plate in my zone",
+  "tabs": {
+    "waiting": "Waiting for you",
+    "coming": "Coming",
+    "parked": "Parked"
+  },
+  "empty": {
+    "waiting": "No vehicles waiting. New ones appear here.",
+    "coming": "No vehicles on the way.",
+    "parked": "No vehicles parked yet.",
+    "search": "No vehicle in your zone matches this plate."
+  },
+  "time": {
+    "assigned": "Assigned {{time}}",
+    "markedParked": "Marked parked {{time}}",
+    "confirmed": "Confirmed {{time}}",
+    "left": "Left {{time}}"
+  },
+  "slot": "Slot {{slot}}",
+  "alertBadge": {
+    "location_mismatch": "Away from slot",
+    "not_arrived": "Late",
+    "confirm_pending": "Waiting long",
+    "wrong_slot": "Wrong slot",
+    "wrong_parking": "Wrong parking",
+    "overstay": "Overstay",
+    "sos": "SOS"
+  },
+  "confirm": "Confirm",
+  "confirmParked": "Confirm parked",
+  "wrongSlot": "Wrong slot",
+  "notHere": "Not here",
+  "markExit": "Mark exit",
+  "report": "Report",
+  "moreActions": "More actions",
+  "confirmedToast": "Parking confirmed",
+  "movedToast": "Moved to {{slot}} and confirmed",
+  "notHereToast": "Reported to admin",
+  "exitToast": "Marked as left",
+  "newWaiting": "{{plate}} is waiting at {{slot}}",
+  "exitDialog": {
+    "title": "Mark {{plate}} as left?",
+    "body": "Slot {{slot}} becomes free.",
+    "confirm": "Mark exit"
+  },
+  "map": {
+    "loading": "Loading map",
+    "slotSheetEmpty": "No vehicle in this slot.",
+    "slotStatus": "Slot {{slot}}",
+    "openVehicle": "Open vehicle"
+  },
+  "fab": "Report wrong parking",
+  "detail": {
+    "back": "Back",
+    "photo": "Vehicle photo",
+    "noPhoto": "No photo",
+    "enlarge": "Tap to enlarge",
+    "phone": "Phone",
+    "accessible": "Accessible",
+    "driverParked": "Driver marked parked {{time}}, {{distance}} from slot",
+    "driverParkedNoLocation": "Driver marked parked {{time}}",
+    "driverNotParked": "Driver has not marked parked",
+    "timeline": "Timeline",
+    "noTimeline": "Nothing recorded yet.",
+    "notFound": "This vehicle is not in your zone.",
+    "closePhoto": "Close photo"
+  },
+  "timeline": {
+    "checked_in": "Checked in",
+    "assigned": "Assigned {{slot}}",
+    "link_sent": "Link sent on WhatsApp",
+    "link_opened": "Driver opened the link",
+    "navigation_started": "Driver started directions",
+    "driver_parked": "Driver marked parked",
+    "confirmed": "Parking confirmed",
+    "wrong_slot_corrected": "Moved from {{from}} to {{to}}",
+    "reassigned": "Slot changed from {{from}} to {{to}}",
+    "exited": "Left",
+    "cancelled": "Check-in cancelled",
+    "location_mismatch": "Away from slot when marked parked",
+    "sos": "SOS raised"
+  },
+  "wrongSlotSheet": {
+    "title": "Where is it parked?",
+    "body": "Pick the slot the vehicle is actually in.",
+    "search": "Search slot",
+    "empty": "No free slot matches.",
+    "confirmIn": "Confirm in {{slot}}",
+    "pick": "Pick a slot",
+    "assignedNow": "Assigned now"
+  },
+  "reportSheet": {
+    "title": "Report wrong parking",
+    "takePhoto": "Take photo",
+    "retake": "Retake",
+    "photoRequired": "A photo is required.",
+    "plate": "Plate (optional)",
+    "reason": "What's wrong?",
+    "blockingRoad": "Blocking a road",
+    "noParking": "In a no-parking area",
+    "twoSlots": "Taking two slots",
+    "other": "Other",
+    "note": "Note",
+    "send": "Send report",
+    "sent": "Report sent",
+    "locationOff": "Turn on location to report",
+    "locating": "Finding your location…",
+    "uploading": "Uploading photo…"
+  }
+}

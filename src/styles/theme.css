@@ -1,0 +1,118 @@
+@import "tailwindcss";
+
+/* Design tokens from docs/06-DESIGN-SYSTEM.md section 2. The only place (with
+   src/features/map/style/colors.ts) that may contain raw colour values. */
+@theme static {
+  /* Neutrals */
+  --color-canvas: #F4F6F9;
+  --color-surface: #FFFFFF;
+  --color-surface-2: #EEF1F5;
+  --color-line: #E1E5EB;
+  --color-line-strong: #C9CFD8;
+  --color-ink: #162033;
+  --color-muted: #5A6475;
+  --color-subtle: #8A93A3;
+
+  /* Action */
+  --color-primary: #1F4FD6;
+  --color-primary-hover: #1942B5;
+  --color-primary-soft: #E7EDFC;
+  --color-on-primary: #FFFFFF;
+  --color-focus: #6E8FF0;
+
+  /* Feedback */
+  --color-danger: #D63B3B;
+  --color-danger-soft: #FCEAEA;
+  --color-warning: #B7791F;
+  --color-warning-soft: #FDF3E1;
+  --color-success: #1E8E52;
+  --color-success-soft: #E4F4EA;
+
+  /* Status (slots and visits) */
+  --color-status-available: #1E9E5A;
+  --color-status-assigned: #0E9FB8;
+  --color-status-enroute: #7A4FE0;
+  --color-status-waiting: #E3A008;
+  --color-status-occupied: #4B5566;
+  --color-status-blocked: #A3ABB8;
+  --color-status-exited: #A3ABB8;
+
+  --color-status-available-soft: #E3F4EA;
+  --color-status-assigned-soft: #E0F4F7;
+  --color-status-enroute-soft: #EFE9FC;
+  --color-status-waiting-soft: #FDF4DC;
+  --color-status-occupied-soft: #E9EBEF;
+  --color-status-blocked-soft: #EEF0F3;
+
+  /* Zone palette */
+  --color-zone-1: #3B6FE0;
+  --color-zone-2: #E07B39;
+  --color-zone-3: #C2477F;
+  --color-zone-4: #2A9D8F;
+  --color-zone-5: #B08900;
+  --color-zone-6: #6D5BD0;
+  --color-zone-7: #4C8C2B;
+  --color-zone-8: #D1495B;
+
+  /* Map only */
+  --color-map-road: #7C8698;
+  --color-map-route: #1F4FD6;
+  --color-traffic-medium: #E3A008;
+  --color-traffic-high: #D63B3B;
+
+  /* Type */
+  --font-sans: "Manrope Variable", "Noto Sans Malayalam", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Barlow Semi Condensed", "Noto Sans Malayalam", ui-sans-serif, sans-serif;
+
+  --text-display: 56px;
+  --text-display--line-height: 60px;
+  --text-display--font-weight: 700;
+  --text-h1: 28px;
+  --text-h1--line-height: 34px;
+  --text-h1--font-weight: 700;
+  --text-h2: 22px;
+  --text-h2--line-height: 28px;
+  --text-h2--font-weight: 700;
+  --text-h3: 18px;
+  --text-h3--line-height: 24px;
+  --text-h3--font-weight: 600;
+  --text-body: 16px;
+  --text-body--line-height: 24px;
+  --text-body--font-weight: 500;
+  --text-body-sm: 14px;
+  --text-body-sm--line-height: 20px;
+  --text-body-sm--font-weight: 500;
+  --text-caption: 12px;
+  --text-caption--line-height: 16px;
+  --text-caption--font-weight: 600;
+  --text-plate: 20px;
+  --text-plate--line-height: 24px;
+  --text-plate--font-weight: 700;
+  --text-plate--letter-spacing: 0.06em;
+
+  /* Radius */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+
+  /* Shadows: only these two */
+  --shadow-*: initial;
+  --shadow-raised: 0 1px 2px rgb(22 32 51 / 0.06), 0 1px 1px rgb(22 32 51 / 0.04);
+  --shadow-overlay: 0 10px 28px rgb(22 32 51 / 0.14), 0 2px 6px rgb(22 32 51 / 0.06);
+
+  /* Layout sizes */
+  --container-form: 400px;
+  --container-assistant: 760px;
+}
+
+/* shadcn/ui variable names mapped to the tokens above */
+:root {
+  --background: var(--color-canvas);
+  --foreground: var(--color-ink);
+  --primary: var(--color-primary);
+  --border: var(--color-line);
+  --ring: var(--color-focus);
+  --radius: var(--radius-md);
+}

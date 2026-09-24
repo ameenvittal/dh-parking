@@ -1,0 +1,200 @@
+{
+  "appName": "EventPark",
+  "plateCountry": "IND",
+  "actions": {
+    "next": "അടുത്തത്",
+    "back": "പിന്നോട്ട്",
+    "cancel": "റദ്ദാക്കുക",
+    "save": "സേവ് ചെയ്യുക",
+    "tryAgain": "വീണ്ടും ശ്രമിക്കുക",
+    "logout": "ലോഗ് ഔട്ട്",
+    "call": "വിളിക്കുക",
+    "close": "അടയ്ക്കുക",
+    "confirm": "ഉറപ്പാക്കുക",
+    "done": "കഴിഞ്ഞു",
+    "copy": "കോപ്പി ചെയ്യുക",
+    "copied": "കോപ്പി ചെയ്തു",
+    "search": "തിരയുക",
+    "clear": "മായ്ക്കുക",
+    "open": "തുറക്കുക",
+    "edit": "തിരുത്തുക",
+    "delete": "നീക്കം ചെയ്യുക",
+    "more": "കൂടുതൽ",
+    "menu": "മെനു",
+    "reload": "വീണ്ടും ലോഡ് ചെയ്യുക",
+    "installApp": "ആപ്പ് ഇൻസ്റ്റാൾ ചെയ്യുക"
+  },
+  "offline": "ഇന്റർനെറ്റ് ഇല്ല. കണക്ഷൻ വന്നാലേ മാറ്റങ്ങൾ സേവ് ആകൂ.",
+  "noLiveEvent": "ഇപ്പോൾ ലൈവ് ആയ പരിപാടി ഇല്ല",
+  "noLiveEventBody": "ഒരു പരിപാടി ലൈവ് ആക്കാൻ അഡ്മിനോട് പറയുക.",
+  "language": "ഭാഷ",
+  "languages": {
+    "en": "English",
+    "ml": "മലയാളം"
+  },
+  "languagesShort": {
+    "en": "EN",
+    "ml": "ML"
+  },
+  "justNow": "ഇപ്പോൾ",
+  "minAgo_one": "{{count}} മിനിറ്റ് മുമ്പ്",
+  "minAgo_other": "{{count}} മിനിറ്റ് മുമ്പ്",
+  "loading": "ലോഡ് ചെയ്യുന്നു…",
+  "slotLabel": "സ്ലോട്ട് {{label}}",
+  "accessible": "ഭിന്നശേഷി സൗകര്യം",
+  "evCharger": "ഇവി ചാർജർ",
+  "demoMode": "ഡെമോ മോഡ്",
+  "errorBoundary": {
+    "title": "എന്തോ പിശക് സംഭവിച്ചു",
+    "body": "പേജ് വീണ്ടും ലോഡ് ചെയ്ത് നോക്കുക. നിങ്ങളുടെ വിവരങ്ങൾ സുരക്ഷിതമാണ്.",
+    "home": "തുടക്കത്തിലേക്ക് പോകുക"
+  },
+  "notFound": {
+    "title": "പേജ് കണ്ടെത്തിയില്ല",
+    "body": "വിലാസം പരിശോധിക്കുക, അല്ലെങ്കിൽ തുടക്കത്തിലേക്ക് മടങ്ങുക.",
+    "home": "തുടക്കത്തിലേക്ക് പോകുക"
+  },
+  "auth": {
+    "staffSignIn": "സ്റ്റാഫ് സൈൻ ഇൻ",
+    "username": "യൂസർനെയിം",
+    "password": "പാസ്‌വേഡ്",
+    "showPassword": "പാസ്‌വേഡ് കാണിക്കുക",
+    "hidePassword": "പാസ്‌വേഡ് മറയ്ക്കുക",
+    "signIn": "സൈൻ ഇൻ ചെയ്യുക",
+    "demoAccounts": "ഡെമോ അക്കൗണ്ടുകൾ",
+    "demoHint": "സൈൻ ഇൻ വിവരങ്ങൾ നിറയ്ക്കാൻ ഒരു അക്കൗണ്ടിൽ തൊടുക.",
+    "demoRoles": {
+      "admin": "അഡ്മിൻ",
+      "gate": "ഗേറ്റ് വോളണ്ടിയർ",
+      "zone": "സോൺ വോളണ്ടിയർ"
+    },
+    "mobileNumber": "മൊബൈൽ നമ്പർ",
+    "countryCode": "+91",
+    "sendAgain": "വീണ്ടും അയയ്ക്കുക",
+    "sendAgainIn": "{{seconds}} സെക്കൻഡ് കഴിഞ്ഞ് വീണ്ടും അയയ്ക്കാം",
+    "openWhatsApp": "വാട്ട്സ്ആപ്പ് സിമുലേറ്റർ തുറക്കുക",
+    "driverNoLink": "വാട്ട്സ്ആപ്പിൽ പാർക്കിംഗ് ലിങ്ക് കിട്ടിയോ? പാർക്കിംഗ് കാണാൻ അതിൽ തൊടുക."
+  },
+  "shell": {
+    "event": "പരിപാടി",
+    "switchEvent": "പരിപാടി മാറ്റുക",
+    "noEvents": "ഇതുവരെ പരിപാടികൾ ഇല്ല",
+    "alerts": "അലേർട്ടുകൾ",
+    "openAlerts_one": "{{count}} തുറന്ന അലേർട്ട്",
+    "openAlerts_other": "{{count}} തുറന്ന അലേർട്ടുകൾ",
+    "account": "അക്കൗണ്ട്",
+    "openMenu": "മെനു തുറക്കുക",
+    "collapseSidebar": "സൈഡ്ബാർ ചുരുക്കുക",
+    "expandSidebar": "സൈഡ്ബാർ വലുതാക്കുക",
+    "mainNav": "പ്രധാന നാവിഗേഷൻ",
+    "signedInAs": "{{name}} ആയി സൈൻ ഇൻ ചെയ്തു"
+  },
+  "adminNav": {
+    "dashboard": "ഡാഷ്ബോർഡ്",
+    "live": "ലൈവ് മാപ്പ്",
+    "vehicles": "വാഹനങ്ങൾ",
+    "alerts": "അലേർട്ടുകൾ",
+    "mapEditor": "മാപ്പ് എഡിറ്റർ",
+    "zones": "സോണുകളും സ്ലോട്ടുകളും",
+    "staff": "സ്റ്റാഫ്",
+    "reports": "റിപ്പോർട്ടുകൾ",
+    "assistant": "അസിസ്റ്റന്റ്",
+    "events": "പരിപാടികൾ",
+    "settings": "ക്രമീകരണങ്ങൾ",
+    "more": "കൂടുതൽ",
+    "gateScreens": "ഗേറ്റ് സ്ക്രീനുകൾ",
+    "zoneScreens": "സോൺ സ്ക്രീനുകൾ",
+    "whatsappSim": "വാട്ട്സ്ആപ്പ് സിമുലേറ്റർ"
+  },
+  "enums": {
+    "visitStatus": {
+      "assigned": "അനുവദിച്ചു",
+      "en_route": "വരുന്നു",
+      "driver_parked": "പരിശോധന കാത്ത്",
+      "confirmed": "പാർക്ക് ചെയ്തു",
+      "exited": "പോയി",
+      "cancelled": "റദ്ദാക്കി"
+    },
+    "slotStatus": {
+      "available": "ഒഴിവ്",
+      "assigned": "അനുവദിച്ചു",
+      "occupied": "നിറഞ്ഞു",
+      "blocked": "തടഞ്ഞു"
+    },
+    "vehicleType": {
+      "bike": "ബൈക്ക്",
+      "car": "കാർ",
+      "ev": "ഇലക്ട്രിക് വാഹനം",
+      "bus": "ബസ്",
+      "other": "മറ്റുള്ളവ"
+    },
+    "category": {
+      "vip": "വിഐപി",
+      "guest": "അതിഥി",
+      "faculty": "അധ്യാപകർ",
+      "student": "വിദ്യാർത്ഥി",
+      "staff": "സ്റ്റാഫ്",
+      "volunteer": "വോളണ്ടിയർ",
+      "performer": "കലാകാരൻ",
+      "general": "പൊതു"
+    },
+    "alertType": {
+      "sos": "SOS",
+      "wrong_slot": "തെറ്റായ സ്ലോട്ട്",
+      "location_mismatch": "സ്ലോട്ടിൽ നിന്ന് അകലെ",
+      "wrong_parking": "തെറ്റായ പാർക്കിംഗ്",
+      "not_arrived": "എത്തിയില്ല",
+      "confirm_pending": "ഉറപ്പാക്കൽ ബാക്കി",
+      "overstay": "സമയം കഴിഞ്ഞും തുടരുന്നു"
+    },
+    "alertStatus": {
+      "open": "തുറന്നത്",
+      "acknowledged": "കണ്ടു",
+      "resolved": "പരിഹരിച്ചു"
+    },
+    "sosReason": {
+      "medical": "മെഡിക്കൽ",
+      "breakdown": "വാഹനം കേടായി",
+      "safety": "സുരക്ഷ",
+      "lost": "വഴി തെറ്റി",
+      "other": "മറ്റുള്ളവ"
+    },
+    "paymentMethod": {
+      "free": "സൗജന്യം",
+      "cash": "പണം",
+      "upi": "UPI"
+    },
+    "waStatus": {
+      "queued": "അയയ്ക്കുന്നു…",
+      "sent": "അയച്ചു",
+      "delivered": "എത്തി",
+      "read": "വായിച്ചു",
+      "failed": "പരാജയപ്പെട്ടു"
+    },
+    "gateKind": {
+      "entry": "പ്രവേശനം",
+      "exit": "പുറത്തേക്ക്",
+      "both": "പ്രവേശനവും പുറത്തേക്കും"
+    },
+    "landmarkKind": {
+      "venue": "വേദി",
+      "entrance": "പ്രവേശന കവാടം",
+      "help_desk": "ഹെൽപ്പ് ഡെസ്ക്",
+      "first_aid": "പ്രഥമ ശുശ്രൂഷ",
+      "toilet": "ശൗചാലയം",
+      "food": "ഭക്ഷണം",
+      "other": "മറ്റുള്ളവ"
+    },
+    "role": {
+      "admin": "അഡ്മിൻ",
+      "gate_volunteer": "ഗേറ്റ് വോളണ്ടിയർ",
+      "zone_volunteer": "സോൺ വോളണ്ടിയർ",
+      "driver": "ഡ്രൈവർ"
+    },
+    "eventStatus": {
+      "draft": "ഡ്രാഫ്റ്റ്",
+      "live": "ലൈവ്",
+      "closed": "അവസാനിച്ചു"
+    }
+  }
+}

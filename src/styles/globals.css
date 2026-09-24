@@ -1,0 +1,185 @@
+@import "./theme.css";
+@import "maplibre-gl/dist/maplibre-gl.css";
+@import "@fontsource-variable/manrope";
+@import "@fontsource/barlow-semi-condensed/600.css";
+@import "@fontsource/barlow-semi-condensed/700.css";
+@import "@fontsource/noto-sans-malayalam/400.css";
+@import "@fontsource/noto-sans-malayalam/600.css";
+@import "@fontsource/noto-sans-malayalam/700.css";
+
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+@utility pt-safe {
+  padding-top: env(safe-area-inset-top);
+}
+@utility h-app {
+  height: 100vh;
+  height: 100dvh;
+}
+@utility min-h-app {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    text-rendering: optimizeLegibility;
+  }
+  html:lang(ml) body {
+    line-height: 1.6;
+  }
+  html:lang(ml) {
+    --text-body--line-height: 28px;
+    --text-body-sm--line-height: 24px;
+    --text-caption--line-height: 20px;
+    --text-h3--line-height: 28px;
+    --text-h2--line-height: 32px;
+  }
+  body {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    font-weight: 500;
+    overscroll-behavior-y: none;
+    background: var(--color-canvas);
+  }
+  #root {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+  button,
+  [role="button"],
+  a {
+    touch-action: manipulation;
+  }
+  button:not(:disabled),
+  [role="button"] {
+    cursor: pointer;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+  /* 16px minimum on inputs prevents iOS zoom on focus */
+  input,
+  textarea,
+  select {
+    font-size: var(--text-body);
+  }
+  @media (min-width: 1024px) {
+    input,
+    textarea,
+    select {
+      font-size: var(--text-body-sm);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Motion: sheet and dialog, arrival sheet, slot pulse (docs 06 section 8) */
+@keyframes sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes slide-in-left {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes row-highlight {
+  from {
+    background-color: var(--color-warning-soft);
+  }
+  to {
+    background-color: transparent;
+  }
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes slot-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+@theme inline {
+  --animate-sheet-up: sheet-up 200ms ease-out;
+  --animate-fade-in: fade-in 200ms ease-out;
+  --animate-slide-in-right: slide-in-right 200ms ease-out;
+  --animate-slide-in-left: slide-in-left 200ms ease-out;
+  --animate-pop-in: pop-in 200ms ease-out;
+  --animate-row-highlight: row-highlight 2s ease-out;
+}
+
+/* MapLibre tweaks */
+.maplibregl-ctrl-attrib {
+  font-size: var(--text-caption);
+}
+.maplibregl-canvas {
+  outline: none;
+}

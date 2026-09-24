@@ -1,0 +1,129 @@
+{
+  "title": "Your parking",
+  "opening": "Opening your parking…",
+  "mapLabel": "Map with your parking slot",
+  "noVisit": {
+    "title": "No parking found",
+    "body": "Ask a volunteer at the gate if you were checked in."
+  },
+  "login": {
+    "title": "Get your parking link",
+    "body": "Enter the mobile number you gave at the gate. We'll send the link on WhatsApp.",
+    "expired": "That link has expired. Get a new one below.",
+    "send": "Send link on WhatsApp",
+    "sent": "If this number has parking today, a link is on its way on WhatsApp."
+  },
+  "consent": {
+    "title": "Allow location to get directions to your slot",
+    "body": "Your location is shared with the event team only while you drive to your slot. It stops once your parking is confirmed.",
+    "allow": "Allow location",
+    "skip": "Continue without it"
+  },
+  "locationOff": {
+    "body": "Location is off. You can still see your slot on the map.",
+    "howTo": "How to turn it on"
+  },
+  "locationHelp": {
+    "title": "Turn on location",
+    "chrome": "Chrome on Android",
+    "chrome1": "Tap the lock icon next to the address bar.",
+    "chrome2": "Tap Permissions, then Location.",
+    "chrome3": "Choose Allow, then reload this page.",
+    "safari": "Safari on iPhone",
+    "safari1": "Open Settings, then Privacy and Security, then Location Services.",
+    "safari2": "Turn on Location Services and set Safari Websites to While Using.",
+    "safari3": "Come back to this page and reload it."
+  },
+  "fromYou": "{{distance}} from you",
+  "near": "Near {{place}}",
+  "startDirections": "Start directions",
+  "markParked": "Mark as parked",
+  "markParkedTitle": "Mark as parked?",
+  "markParkedConfirm": "Only tap this after your vehicle is in slot {{slot}}.",
+  "markedToast": "Marked as parked",
+  "waitingCheck": "Waiting for the volunteer to check your parking",
+  "confirmed": "Parking confirmed",
+  "slotChanged": "Your slot changed to {{slot}}",
+  "farFromSlot": "You seem to be away from slot {{slot}}. A volunteer will check.",
+  "findVehicle": "Find my vehicle",
+  "walkThere": "Walk me there",
+  "visitEnded": "Thanks for visiting. Your visit has ended.",
+  "visitCancelled": "This parking was cancelled. Ask a volunteer at the gate.",
+  "menu": {
+    "open": "Menu",
+    "title": "Menu",
+    "sharing": "Location sharing",
+    "sharingOn": "The event team can see where you are",
+    "sharingOff": "Your location is not shared",
+    "helpLine": "Event help line"
+  },
+  "find": {
+    "walkEta_one": "{{distance}} walk, about {{count}} min",
+    "walkEta_other": "{{distance}} walk, about {{count}} min",
+    "followMap": "Walk to slot {{slot}} on the map",
+    "noLocation": "Turn on location to get walking directions."
+  },
+  "nav": {
+    "findingLocation": "Finding your location…",
+    "headToGate": "Head to the campus gate",
+    "followVolunteers": "Follow the volunteers' directions to {{zone}}",
+    "continueFor": "Continue for {{distance}}",
+    "turnLeftIn": "Turn left in {{distance}}",
+    "turnRightIn": "Turn right in {{distance}}",
+    "slightLeftIn": "Keep left in {{distance}}",
+    "slightRightIn": "Keep right in {{distance}}",
+    "uturnIn": "Make a U-turn in {{distance}}",
+    "turnLeftNow": "Turn left now",
+    "turnRightNow": "Turn right now",
+    "slightLeftNow": "Keep left now",
+    "slightRightNow": "Keep right now",
+    "uturnNow": "Make a U-turn now",
+    "slotOnLeft": "Your slot is on the left",
+    "slotOnRight": "Your slot is on the right",
+    "arrived": "You have arrived",
+    "parkThenTap": "Park in {{slot}}, then tap below.",
+    "notYet": "Not yet",
+    "rerouting": "Finding a new route…",
+    "now": "Now",
+    "end": "End",
+    "aboutMin_one": "about {{count}} min",
+    "aboutMin_other": "about {{count}} min",
+    "then": {
+      "start": "Then continue for {{distance}}",
+      "straight": "Then continue for {{distance}}",
+      "slight_left": "Then keep left",
+      "slight_right": "Then keep right",
+      "left": "Then turn left",
+      "right": "Then turn right",
+      "sharp_left": "Then turn sharp left",
+      "sharp_right": "Then turn sharp right",
+      "uturn": "Then make a U-turn",
+      "arrive": "Then your slot is ahead"
+    }
+  },
+  "sim": {
+    "drive": "Simulate drive",
+    "walk": "Simulate walk",
+    "pause": "Pause",
+    "resume": "Resume",
+    "offRoute": "Go off route",
+    "stop": "Stop simulation"
+  },
+  "sos": {
+    "label": "SOS",
+    "title": "Need help?",
+    "body": "The event team will see your location and vehicle.",
+    "whatHappened": "What happened?",
+    "reason": {
+      "medical": "Medical",
+      "breakdown": "Vehicle breakdown",
+      "safety": "Safety",
+      "lost": "I'm lost",
+      "other": "Other"
+    },
+    "noteLabel": "Add a note (optional)",
+    "send": "Send SOS",
+    "sent": "Help request sent. Keep your phone with you.",
+    "callHelpline": "Call event help line"
+  }
+}

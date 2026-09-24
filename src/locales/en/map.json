@@ -1,0 +1,13 @@
+{
+  "loadFailed": "The map couldn't load. Check your connection and try again.",
+  "zoneFree_one": "{{count}} free",
+  "zoneFree_other": "{{count}} free",
+  "you": "Your location",
+  "controls": {
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "recenter": "Recenter",
+    "showStreet": "Show street map",
+    "showSatellite": "Show satellite map"
+  }
+}
