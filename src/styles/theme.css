@@ -14,11 +14,11 @@
   --color-subtle: #94A3B8;
 
   /* Action */
-  --color-primary: #1F4FD6;
-  --color-primary-hover: #1942B5;
-  --color-primary-soft: #EFF6FF;
+  --color-primary: #16A34A;
+  --color-primary-hover: #15803D;
+  --color-primary-soft: #ECFDF5;
   --color-on-primary: #FFFFFF;
-  --color-focus: #6E8FF0;
+  --color-focus: #4ADE80;
 
   /* Feedback */
   --color-danger: #D63B3B;

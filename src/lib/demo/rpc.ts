@@ -1248,7 +1248,7 @@ export function upsertEvent(input: EventInput): EventRow {
       ends_at: now,
       timezone: 'Asia/Kolkata',
       status: 'draft',
-      center: liveEvent(db)?.center ?? [76.6, 8.88],
+      center: liveEvent(db)?.center ?? [75.9075, 11.0504],
       default_zoom: 17,
       paid_parking: false,
       fee_rules: { bike: 0, car: 0, ev: 0, bus: 0, other: 0 },

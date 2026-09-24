@@ -1,9 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Eye, EyeOff, MessageCircle } from 'lucide-react'
+import { Eye, EyeOff } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { Link, Navigate, useLocation, useNavigate } from 'react-router'
+import { Navigate, useLocation, useNavigate } from 'react-router'
 import { LanguageSwitch } from '@/components/common/LanguageSwitch'
 import { OfflineBanner } from '@/components/common/OfflineBanner'
 import { Alert } from '@/components/ui/Alert'
@@ -132,12 +132,6 @@ export function StaffLoginPage() {
             <>
               <Separator />
               <DemoAccounts onPick={pick} />
-              <Button asChild variant="link" size="sm" className="self-start">
-                <Link to="/sim" target="_blank" rel="noopener">
-                  <MessageCircle size={16} strokeWidth={1.75} aria-hidden="true" />
-                  {t('auth.openWhatsApp')}
-                </Link>
-              </Button>
             </>
           ) : null}
 

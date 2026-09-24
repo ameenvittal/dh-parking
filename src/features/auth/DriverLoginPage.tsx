@@ -3,7 +3,7 @@ import { MessageCircle } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { Link, Navigate, useSearchParams } from 'react-router'
+import { Navigate, useSearchParams } from 'react-router'
 import { LanguageSwitch } from '@/components/common/LanguageSwitch'
 import { MobileShell } from '@/components/shell/MobileShell'
 import { StickyActionBar } from '@/components/shell/StickyActionBar'
@@ -11,7 +11,6 @@ import { TopBar } from '@/components/shell/TopBar'
 import { Alert } from '@/components/ui/Alert'
 import { Button } from '@/components/ui/Button'
 import { Field } from '@/components/ui/Field'
-import { DEMO_MODE } from '@/config/app'
 import { useAuth } from '@/hooks/useAuth'
 import { useErrorText } from '@/hooks/useErrorText'
 import { errorCode } from '@/lib/errors'
@@ -151,17 +150,6 @@ export function DriverLoginPage() {
         </Alert>
       )}
 
-      {DEMO_MODE ? (
-        <div className="mt-auto flex flex-col items-start gap-1 pt-4">
-          <p className="text-body-sm text-muted">{t('common.auth.driverNoLink')}</p>
-          <Button asChild variant="link" size="sm">
-            <Link to="/sim">
-              <MessageCircle size={16} strokeWidth={1.75} aria-hidden="true" />
-              {t('common.auth.openWhatsApp')}
-            </Link>
-          </Button>
-        </div>
-      ) : null}
     </MobileShell>
   )
 }

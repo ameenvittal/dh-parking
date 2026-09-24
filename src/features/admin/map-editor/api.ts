@@ -11,7 +11,8 @@ import type {
   UpsertOverlayInput,
   UpsertZoneInput,
 } from '@/lib/demo/types'
-import type { GateRow, LandmarkRow, SlotRow, ZoneRow } from '@/types/domain'
+import * as rpc from '@/lib/demo/rpc'
+import type { EventRow, GateRow, LandmarkRow, LngLat, SlotRow, ZoneRow } from '@/types/domain'
 
 export type {
   OverlayRow,
@@ -91,3 +92,8 @@ export function upsertOverlay(input: UpsertOverlayInput): Promise<OverlayRow> {
 export function deleteOverlay(id: string): Promise<void> {
   return call(() => editor.adminDeleteOverlay(id))
 }
+
+export function updateEventCenter(eventId: string, center: LngLat): Promise<EventRow> {
+  return call(() => rpc.upsertEvent({ id: eventId, center }))
+}
+

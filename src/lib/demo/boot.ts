@@ -44,7 +44,20 @@ function safe(fn: () => unknown): void {
 }
 
 export function ensureBooted(): void {
-  if (sharedStorage().getItem(DB_KEY) === null) replaceDb(buildSeed().db)
+  const stored = sharedStorage().getItem(DB_KEY)
+  if (stored === null) {
+    replaceDb(buildSeed().db)
+  } else {
+    try {
+      const parsed = JSON.parse(stored)
+      const ev = parsed.events?.[0]
+      if (ev && Math.abs(ev.center[0] - 76.6) < 0.05 && Math.abs(ev.center[1] - 8.88) < 0.05) {
+        replaceDb(buildSeed().db)
+      }
+    } catch {
+      replaceDb(buildSeed().db)
+    }
+  }
   if (!shiftChecked) {
     shiftChecked = true
     keepEventLive()

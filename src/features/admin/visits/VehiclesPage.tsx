@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { CircleAlert, CircleCheck, Clock, Download, Search } from 'lucide-react'
+import { CircleAlert, CircleCheck, Clock, Download, LayoutGrid, List, Search } from 'lucide-react'
 import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router'
@@ -8,6 +8,7 @@ import { EmptyState } from '@/components/common/EmptyState'
 import { ErrorState } from '@/components/common/ErrorState'
 import { PlateChip } from '@/components/common/PlateChip'
 import { StatusBadge } from '@/components/common/StatusBadge'
+import { vehicleTypeIcon } from '@/components/common/statusMeta'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Select } from '@/components/ui/Select'
@@ -20,6 +21,7 @@ import type { EventListItem, VisitListFilters } from '@/lib/demo/types'
 import { formatClock, isoDay } from '@/lib/format'
 import { queryKeys } from '@/lib/queryKeys'
 import { useRealtime } from '@/lib/realtime'
+import { cn } from '@/lib/utils'
 import { VEHICLE_TYPES, VISIT_STATUSES, VISITOR_CATEGORIES, type VehicleType, type VisitStatus, type VisitSummary, type VisitorCategory, type WaStatus } from '@/types/domain'
 import { ADMIN_BTN } from '../components/buttonSizes'
 import { MultiFilter } from '../components/MultiFilter'
@@ -60,6 +62,7 @@ function VehiclesView({ event }: { event: EventListItem }) {
   const [page, setPage] = useState(0)
   const [visitId, setVisitId] = useState<string | null>(null)
   const [exporting, setExporting] = useState(false)
+  const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards')
 
   const filters: VisitListFilters = useMemo(() => {
     let fromIso: string | null = null
@@ -130,27 +133,57 @@ function VehiclesView({ event }: { event: EventListItem }) {
               className="pl-9"
             />
           </div>
-          <Button
-            variant="secondary"
-            size="md"
-            className={ADMIN_BTN}
-            icon={<Download size={16} strokeWidth={1.75} aria-hidden="true" />}
-            loading={exporting}
-            disabled={rows.length === 0}
-            onClick={async () => {
-              setExporting(true)
-              try {
-                await exportVisitList(rows, event.name, t)
-                toast.success(t('admin.vehicles.exported'))
-              } catch (err) {
-                toast.error(errorText(err))
-              } finally {
-                setExporting(false)
-              }
-            }}
-          >
-            {t('admin.vehicles.exportExcel')}
-          </Button>
+          <div className="flex items-center gap-2">
+            <div className="hidden items-center rounded-md border border-line bg-surface p-0.5 shadow-raised sm:flex">
+              <button
+                type="button"
+                aria-pressed={viewMode === 'cards'}
+                onClick={() => setViewMode('cards')}
+                className={cn(
+                  'inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-caption font-semibold transition-colors',
+                  viewMode === 'cards' ? 'bg-primary text-on-primary' : 'text-muted hover:text-ink',
+                )}
+                aria-label={t('admin.vehicles.viewCards')}
+              >
+                <LayoutGrid size={14} />
+                <span>{t('admin.vehicles.viewCards')}</span>
+              </button>
+              <button
+                type="button"
+                aria-pressed={viewMode === 'table'}
+                onClick={() => setViewMode('table')}
+                className={cn(
+                  'inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-caption font-semibold transition-colors',
+                  viewMode === 'table' ? 'bg-primary text-on-primary' : 'text-muted hover:text-ink',
+                )}
+                aria-label={t('admin.vehicles.viewTable')}
+              >
+                <List size={14} />
+                <span>{t('admin.vehicles.viewTable')}</span>
+              </button>
+            </div>
+            <Button
+              variant="secondary"
+              size="md"
+              className={ADMIN_BTN}
+              icon={<Download size={16} strokeWidth={1.75} aria-hidden="true" />}
+              loading={exporting}
+              disabled={rows.length === 0}
+              onClick={async () => {
+                setExporting(true)
+                try {
+                  await exportVisitList(rows, event.name, t)
+                  toast.success(t('admin.vehicles.exported'))
+                } catch (err) {
+                  toast.error(errorText(err))
+                } finally {
+                  setExporting(false)
+                }
+              }}
+            >
+              {t('admin.vehicles.exportExcel')}
+            </Button>
+          </div>
         </div>
         <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0">
           <MultiFilter
@@ -230,13 +263,13 @@ function VehiclesView({ event }: { event: EventListItem }) {
       {list.isLoading ? (
         <Skeleton className="h-96 w-full rounded-lg" />
       ) : rows.length === 0 ? (
-        <div className="rounded-lg border border-line bg-surface">
+        <div className="rounded-lg border border-line bg-surface shadow-raised">
           <EmptyState title={filtered ? t('admin.vehicles.empty') : t('admin.vehicles.emptyNone')} />
         </div>
-      ) : wide ? (
-        <VisitsTable rows={pageRows} onRow={setVisitId} />
+      ) : viewMode === 'cards' || !wide ? (
+        <VisitsCardGrid rows={pageRows} onRow={setVisitId} />
       ) : (
-        <VisitsList rows={pageRows} onRow={setVisitId} />
+        <VisitsTable rows={pageRows} onRow={setVisitId} />
       )}
 
       <Pagination page={page} pageSize={PAGE_SIZE} total={rows.length} onPage={setPage} />
@@ -298,28 +331,72 @@ function VisitsTable({ rows, onRow }: { rows: VisitSummary[]; onRow: (id: string
   )
 }
 
-/** Phones: stacked list instead of a table. */
-function VisitsList({ rows, onRow }: { rows: VisitSummary[]; onRow: (id: string) => void }) {
+function VisitsCardGrid({ rows, onRow }: { rows: VisitSummary[]; onRow: (id: string) => void }) {
   const { t } = useTranslation(['admin', 'common'])
+  const time = (iso: string | null) => (iso ? formatClock(iso) : '')
+
   return (
-    <ul className="divide-y divide-line overflow-hidden rounded-lg border border-line bg-surface">
-      {rows.map((v) => (
-        <li key={v.id}>
-          <button type="button" onClick={() => onRow(v.id)} className="flex w-full flex-col gap-2 px-4 py-3 text-left outline-none active:bg-canvas focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-inset">
-            <span className="flex items-center justify-between gap-3">
-              <PlateChip plate={v.plate} size="sm" />
-              <StatusBadge status={v.status} vehicleType={v.vehicle_type} />
-            </span>
-            <span className="flex flex-wrap items-center gap-x-3 gap-y-1 text-body-sm text-muted">
-              {v.slot_label ? <span className="font-display font-bold text-ink">{v.slot_label}</span> : null}
-              <span>{t(`common.enums.vehicleType.${v.vehicle_type}`)}</span>
-              <span>{t(`common.enums.category.${v.category}`)}</span>
-              <span className="tabular-nums">{formatClock(v.checked_in_at)}</span>
-              <WaIcon status={v.wa_status} />
-            </span>
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {rows.map((v) => {
+        const TypeIcon = vehicleTypeIcon[v.vehicle_type]
+        return (
+          <button
+            key={v.id}
+            type="button"
+            onClick={() => onRow(v.id)}
+            className="group flex flex-col justify-between rounded-lg border border-line bg-surface p-4 text-left shadow-raised transition-all hover:border-primary/40 hover:bg-canvas/50 focus-visible:ring-2 focus-visible:ring-focus"
+          >
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center justify-between gap-2">
+                <PlateChip plate={v.plate} size="sm" />
+                <StatusBadge status={v.status} vehicleType={v.vehicle_type} />
+              </div>
+
+              <div className="flex items-baseline justify-between gap-2 border-y border-line/60 py-2">
+                <div className="flex flex-col">
+                  <span className="text-caption text-muted">{t('admin.vehicles.columns.slot')}</span>
+                  <span className="font-display text-h3 font-bold text-ink tabular-nums">
+                    {v.slot_label ?? t('admin.shared.dash')}
+                  </span>
+                </div>
+                {v.zone_code ? (
+                  <div className="flex flex-col items-end">
+                    <span className="text-caption text-muted">{t('admin.vehicles.columns.zone')}</span>
+                    <span className="text-body-sm font-semibold text-ink">{v.zone_code}</span>
+                  </div>
+                ) : null}
+              </div>
+
+              <div className="flex flex-wrap items-center gap-1.5 text-caption">
+                {TypeIcon ? (
+                  <span className="inline-flex items-center gap-1 rounded-md bg-surface-2 px-2 py-0.5 font-medium text-ink">
+                    <TypeIcon size={12} className="text-muted" />
+                    {t(`common.enums.vehicleType.${v.vehicle_type}`)}
+                  </span>
+                ) : null}
+                <span className="inline-flex items-center rounded-md bg-surface-2 px-2 py-0.5 font-medium text-muted">
+                  {t(`common.enums.category.${v.category}`)}
+                </span>
+                {v.entry_gate_name ? (
+                  <span className="inline-flex items-center rounded-md bg-surface-2 px-2 py-0.5 text-muted">
+                    {v.entry_gate_name}
+                  </span>
+                ) : null}
+              </div>
+            </div>
+
+            <div className="mt-3 flex items-center justify-between border-t border-line/60 pt-2.5 text-caption text-muted">
+              <span className="tabular-nums font-medium text-ink">
+                {v.phone ?? v.phone_masked}
+              </span>
+              <div className="flex items-center gap-2">
+                <span className="tabular-nums">{time(v.checked_in_at)}</span>
+                <WaIcon status={v.wa_status} />
+              </div>
+            </div>
           </button>
-        </li>
-      ))}
-    </ul>
+        )
+      })}
+    </div>
   )
 }

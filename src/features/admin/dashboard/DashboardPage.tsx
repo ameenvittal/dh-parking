@@ -2,10 +2,12 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router'
+import { CircleCheck, DoorOpen, Hourglass, LogOut, MessageCircle, Navigation, RotateCw, Siren, Square, TriangleAlert } from 'lucide-react'
 import { EmptyState } from '@/components/common/EmptyState'
 import { ErrorState } from '@/components/common/ErrorState'
 import { KpiStrip } from '@/components/common/KpiStrip'
 import { vehicleTypeIcon } from '@/components/common/statusMeta'
+import { Button } from '@/components/ui/Button'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { SwitchRow } from '@/components/ui/SwitchRow'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table'
@@ -85,12 +87,43 @@ function DashboardView({ event }: { event: EventListItem }) {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-end">
-        {s ? (
-          <p className="text-body-sm text-muted tabular-nums" aria-live="polite">
-            {t('admin.shared.updatedAt', { time: formatClockSeconds(s.last_updated) })}
-          </p>
-        ) : null}
+      {/* Live Operations Header */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1 shadow-raised">
+            <span className="relative flex size-2.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
+              <span className="relative inline-flex size-2.5 rounded-full bg-primary" />
+            </span>
+            <span className="text-body-sm font-semibold text-ink">{t('admin.dashboard.liveOverview')}</span>
+          </div>
+          {s ? (
+            <span className="text-body-sm text-muted">
+              {t('admin.dashboard.capacityOverview', {
+                occupied: s.slots.occupied,
+                total: s.slots.total,
+                pct: s.slots.total > 0 ? Math.round((s.slots.occupied / s.slots.total) * 100) : 0,
+              })}
+            </span>
+          ) : null}
+        </div>
+
+        <div className="flex items-center gap-2 text-body-sm text-muted">
+          {s ? (
+            <span className="tabular-nums" aria-live="polite">
+              {t('admin.shared.updatedAt', { time: formatClockSeconds(s.last_updated) })}
+            </span>
+          ) : null}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="size-8 p-0 text-muted hover:text-ink"
+            onClick={() => void qc.invalidateQueries({ queryKey: queryKeys.dashboard(event.id) })}
+            aria-label={t('admin.dashboard.refresh')}
+          >
+            <RotateCw size={14} className={summary.isFetching ? 'animate-spin' : ''} />
+          </Button>
+        </div>
       </div>
 
       {summary.error ? <ErrorState error={summary.error} onRetry={() => void summary.refetch()} /> : null}
@@ -98,34 +131,71 @@ function DashboardView({ event }: { event: EventListItem }) {
       {s ? (
         <KpiStrip
           items={[
-            { key: 'free', label: t('admin.dashboard.kpi.free'), value: formatNumber(s.slots.available) },
-            { key: 'way', label: t('admin.dashboard.kpi.onTheWay'), value: formatNumber(s.visits.en_route) },
+            {
+              key: 'free',
+              label: t('admin.dashboard.kpi.free'),
+              value: formatNumber(s.slots.available),
+              icon: Square,
+              statusColor: 'available',
+            },
+            {
+              key: 'way',
+              label: t('admin.dashboard.kpi.onTheWay'),
+              value: formatNumber(s.visits.en_route),
+              icon: Navigation,
+              statusColor: 'enroute',
+            },
             {
               key: 'wait',
               label: t('admin.dashboard.kpi.waiting'),
               value: formatNumber(s.visits.awaiting_confirm),
+              icon: Hourglass,
+              statusColor: 'waiting',
               tone: s.visits.awaiting_confirm > 0 ? 'warning' : 'default',
             },
-            { key: 'parked', label: t('admin.dashboard.kpi.parked'), value: formatNumber(s.visits.confirmed) },
-            { key: 'left', label: t('admin.dashboard.kpi.left'), value: formatNumber(s.visits.exited) },
+            {
+              key: 'parked',
+              label: t('admin.dashboard.kpi.parked'),
+              value: formatNumber(s.visits.confirmed),
+              icon: CircleCheck,
+              statusColor: 'occupied',
+            },
+            {
+              key: 'left',
+              label: t('admin.dashboard.kpi.left'),
+              value: formatNumber(s.visits.exited),
+              icon: LogOut,
+              statusColor: 'exited',
+            },
             {
               key: 'alerts',
               label: t('admin.dashboard.kpi.alerts'),
               value: formatNumber(s.alerts.open),
+              icon: s.alerts.sos_open > 0 ? Siren : TriangleAlert,
+              statusColor: s.alerts.sos_open > 0 ? 'danger' : s.alerts.open > 0 ? 'warning' : undefined,
               tone: s.alerts.sos_open > 0 ? 'danger' : 'default',
               delta: s.alerts.sos_open > 0 ? t('admin.dashboard.kpi.sosOpen', { count: s.alerts.sos_open }) : undefined,
               onClick: () => void navigate('/admin/alerts'),
             },
           ]}
+          footer={<CapacityDistribution s={s} />}
         />
       ) : summary.isLoading ? (
-        <Skeleton className="h-24 w-full rounded-lg" />
+        <Skeleton className="h-28 w-full rounded-lg" />
       ) : null}
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-12">
-        <section className="flex flex-col overflow-hidden rounded-lg border border-line bg-surface xl:col-span-8">
-          <div className="flex h-12 items-center justify-between gap-3 border-b border-line px-4">
-            <h2 className="text-h3 font-bold text-ink">{t('admin.dashboard.liveMap')}</h2>
+        <section className="flex flex-col overflow-hidden rounded-lg border border-line bg-surface shadow-raised xl:col-span-8">
+          <div className="flex h-13 items-center justify-between gap-3 border-b border-line px-4 sm:px-5">
+            <div className="flex items-center gap-2.5">
+              <h2 className="text-h3 font-bold text-ink">{t('admin.dashboard.liveMap')}</h2>
+              {s && s.visits.en_route > 0 ? (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-status-enroute-soft px-2.5 py-0.5 text-caption font-semibold text-status-enroute">
+                  <Navigation size={12} strokeWidth={2.5} />
+                  {t('admin.dashboard.movingCount', { count: s.visits.en_route })}
+                </span>
+              ) : null}
+            </div>
             <Link to="/admin/live" className="text-body-sm font-semibold text-primary underline-offset-4 hover:underline">
               {t('admin.dashboard.openLiveMap')}
             </Link>
@@ -133,13 +203,15 @@ function DashboardView({ event }: { event: EventListItem }) {
           <DashboardMap eventId={event.id} onVehicle={setVisitId} />
         </section>
 
-        <section className="flex min-h-96 flex-col overflow-hidden rounded-lg border border-line bg-surface xl:col-span-4 xl:max-h-146">
+        <section className="flex min-h-96 flex-col overflow-hidden rounded-lg border border-line bg-surface shadow-raised xl:col-span-4 xl:max-h-146">
           <Tabs defaultValue="alerts" className="flex min-h-0 flex-1 flex-col">
-            <TabsList className="px-2">
-              <TabsTrigger value="alerts">
+            <TabsList className="px-2 pt-2">
+              <TabsTrigger value="alerts" className="gap-2">
                 {t('admin.dashboard.tabs.alerts')}
                 {openAlerts.length ? (
-                  <span className="rounded-sm bg-surface-2 px-1.5 text-caption text-muted tabular-nums">{openAlerts.length}</span>
+                  <span className={cn('rounded-full px-2 py-0.5 text-caption font-bold tabular-nums', alerts.data?.some(a => a.type === 'sos' && a.status === 'open') ? 'bg-danger text-white' : 'bg-surface-2 text-ink')}>
+                    {openAlerts.length}
+                  </span>
                 ) : null}
               </TabsTrigger>
               <TabsTrigger value="activity">{t('admin.dashboard.tabs.activity')}</TabsTrigger>
@@ -190,7 +262,7 @@ function DashboardView({ event }: { event: EventListItem }) {
         <h2 className="text-h3 font-bold text-ink">{t('admin.dashboard.zones')}</h2>
         {s ? (
           s.zones.length === 0 ? (
-            <div className="rounded-lg border border-line bg-surface">
+            <div className="rounded-lg border border-line bg-surface shadow-raised">
               <EmptyState title={t('admin.dashboard.noZones')} />
             </div>
           ) : wide ? (
@@ -205,26 +277,36 @@ function DashboardView({ event }: { event: EventListItem }) {
 
       {s ? (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <section className="flex flex-col gap-3 rounded-lg border border-line bg-surface p-5">
-            <h2 className="text-h3 font-bold text-ink">{t('admin.dashboard.gates')}</h2>
+          <section className="flex flex-col gap-3 rounded-lg border border-line bg-surface p-5 shadow-raised">
+            <div className="flex items-center gap-2 border-b border-line pb-3">
+              <DoorOpen size={18} className="text-muted" />
+              <h2 className="text-h3 font-bold text-ink">{t('admin.dashboard.gates')}</h2>
+            </div>
             {s.gates.length === 0 ? (
               <p className="text-body-sm text-muted">{t('admin.dashboard.noGates')}</p>
             ) : (
               <ul className="divide-y divide-line">
                 {s.gates.map((g) => (
                   <li key={g.id} className="flex items-center justify-between gap-4 py-2.5 text-body-sm">
-                    <span className="font-medium text-ink">{g.name}</span>
-                    <span className="flex gap-4 text-muted tabular-nums">
-                      <span>{t('admin.dashboard.gateIn', { count: g.checkins_15m })}</span>
-                      <span>{t('admin.dashboard.gateOut', { count: g.exits_15m })}</span>
+                    <span className="font-semibold text-ink">{g.name}</span>
+                    <span className="flex items-center gap-2 tabular-nums">
+                      <span className="rounded-md bg-status-available-soft px-2 py-0.5 text-caption font-medium text-status-available">
+                        {t('admin.dashboard.gateIn', { count: g.checkins_15m })}
+                      </span>
+                      <span className="rounded-md bg-surface-2 px-2 py-0.5 text-caption font-medium text-muted">
+                        {t('admin.dashboard.gateOut', { count: g.exits_15m })}
+                      </span>
                     </span>
                   </li>
                 ))}
               </ul>
             )}
           </section>
-          <section className="flex flex-col gap-3 rounded-lg border border-line bg-surface p-5">
-            <h2 className="text-h3 font-bold text-ink">{t('admin.dashboard.whatsapp')}</h2>
+          <section className="flex flex-col gap-3 rounded-lg border border-line bg-surface p-5 shadow-raised">
+            <div className="flex items-center gap-2 border-b border-line pb-3">
+              <MessageCircle size={18} className="text-muted" />
+              <h2 className="text-h3 font-bold text-ink">{t('admin.dashboard.whatsapp')}</h2>
+            </div>
             <WaStats wa={s.wa} />
           </section>
         </div>
@@ -239,6 +321,51 @@ function DashboardView({ event }: { event: EventListItem }) {
           setVisitId(id)
         }}
       />
+    </div>
+  )
+}
+
+function CapacityDistribution({ s }: { s: DashboardSummary }) {
+  const { t } = useTranslation('admin')
+  const total = Math.max(1, s.slots.total)
+  const parkedPct = Math.round((s.slots.occupied / total) * 100)
+  const waitingPct = Math.round((s.visits.awaiting_confirm / total) * 100)
+  const wayPct = Math.round((s.visits.en_route / total) * 100)
+  const freePct = Math.max(0, 100 - (parkedPct + waitingPct + wayPct))
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-2 text-caption font-semibold text-muted">
+        <span className="flex flex-wrap items-center gap-x-4 gap-y-1">
+          <span className="inline-flex items-center gap-1.5">
+            <span className="size-2 rounded-full bg-status-occupied" />
+            <span className="text-ink">{s.slots.occupied}</span> {t('admin.dashboard.kpi.parked')}
+          </span>
+          {s.visits.awaiting_confirm > 0 ? (
+            <span className="inline-flex items-center gap-1.5">
+              <span className="size-2 rounded-full bg-status-waiting" />
+              <span className="text-ink">{s.visits.awaiting_confirm}</span> {t('admin.dashboard.kpi.waiting')}
+            </span>
+          ) : null}
+          {s.visits.en_route > 0 ? (
+            <span className="inline-flex items-center gap-1.5">
+              <span className="size-2 rounded-full bg-status-enroute" />
+              <span className="text-ink">{s.visits.en_route}</span> {t('admin.dashboard.kpi.onTheWay')}
+            </span>
+          ) : null}
+          <span className="inline-flex items-center gap-1.5">
+            <span className="size-2 rounded-full bg-status-available" />
+            <span className="text-ink">{s.slots.available}</span> {t('admin.dashboard.kpi.free')}
+          </span>
+        </span>
+        <span className="tabular-nums font-bold text-ink">{parkedPct}% filled</span>
+      </div>
+      <div className="flex h-2 w-full overflow-hidden rounded-full bg-surface-2" role="progressbar" aria-valuenow={parkedPct} aria-valuemin={0} aria-valuemax={100}>
+        {parkedPct > 0 ? <div style={{ width: `${parkedPct}%` }} className="h-full bg-status-occupied transition-all" /> : null}
+        {waitingPct > 0 ? <div style={{ width: `${waitingPct}%` }} className="h-full bg-status-waiting transition-all" /> : null}
+        {wayPct > 0 ? <div style={{ width: `${wayPct}%` }} className="h-full bg-status-enroute transition-all" /> : null}
+        {freePct > 0 ? <div style={{ width: `${freePct}%` }} className="h-full bg-status-available transition-all" /> : null}
+      </div>
     </div>
   )
 }
@@ -305,7 +432,7 @@ function TypeIcons({ types }: { types: ZoneRow['vehicle_types'] }) {
 function ZonesTable({ zones, lang, onRow }: { zones: ZoneRow[]; lang: string; onRow: (id: string) => void }) {
   const { t } = useTranslation(['admin', 'common'])
   return (
-    <div className="overflow-hidden rounded-lg border border-line bg-surface">
+    <div className="overflow-hidden rounded-lg border border-line bg-surface shadow-raised">
       <Table>
         <TableHeader>
           <TableRow>
@@ -356,7 +483,7 @@ function ZonesTable({ zones, lang, onRow }: { zones: ZoneRow[]; lang: string; on
 function ZonesList({ zones, lang, onRow }: { zones: ZoneRow[]; lang: string; onRow: (id: string) => void }) {
   const { t } = useTranslation(['admin', 'common'])
   return (
-    <ul className="divide-y divide-line overflow-hidden rounded-lg border border-line bg-surface">
+    <ul className="divide-y divide-line overflow-hidden rounded-lg border border-line bg-surface shadow-raised">
       {zones.map((z) => (
         <li key={z.id}>
           <button type="button" onClick={() => onRow(z.id)} className="flex w-full flex-col gap-2 px-4 py-3 text-left outline-none active:bg-canvas focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-inset">

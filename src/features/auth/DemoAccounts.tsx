@@ -16,12 +16,14 @@ type DemoAccountsProps = { onPick: (username: string, password: string) => void 
 export function DemoAccounts({ onPick }: DemoAccountsProps) {
   const { t } = useTranslation('common')
   return (
-    <section aria-labelledby="demo-accounts" className="flex flex-col gap-2">
-      <h2 id="demo-accounts" className="text-body-sm font-semibold text-ink">
-        {t('auth.demoAccounts')}
-      </h2>
-      <p className="text-body-sm text-muted">{t('auth.demoHint')}</p>
-      <ul className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+    <section aria-labelledby="demo-accounts" className="flex flex-col gap-3">
+      <div>
+        <h2 id="demo-accounts" className="text-body-sm font-semibold text-ink">
+          {t('auth.demoAccounts')}
+        </h2>
+        <p className="text-caption text-muted">{t('auth.demoHint')}</p>
+      </div>
+      <ul className="flex flex-col gap-2">
         {ACCOUNTS.map((a) => {
           const Icon = a.icon
           return (
@@ -29,12 +31,19 @@ export function DemoAccounts({ onPick }: DemoAccountsProps) {
               <button
                 type="button"
                 onClick={() => onPick(a.username, a.password)}
-                className="flex h-12 w-full items-center gap-2.5 rounded-md border border-line-strong bg-surface px-3 text-left outline-none transition-colors hover:bg-surface-2 focus-visible:ring-2 focus-visible:ring-focus sm:h-auto sm:flex-col sm:items-start sm:gap-1 sm:py-2.5"
+                className="group flex w-full items-center justify-between gap-3 rounded-lg border border-line bg-surface p-3 text-left shadow-raised outline-none transition-all hover:border-primary/40 hover:bg-surface-2/60 focus-visible:ring-2 focus-visible:ring-focus"
               >
-                <Icon size={18} strokeWidth={1.75} aria-hidden="true" className="shrink-0 text-muted" />
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-body-sm font-semibold text-ink">{t(a.roleKey)}</span>
-                  <span className="block truncate font-mono text-caption text-muted">{a.username}</span>
+                <div className="flex min-w-0 items-center gap-3">
+                  <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-primary-soft text-primary transition-colors group-hover:bg-primary group-hover:text-on-primary">
+                    <Icon size={18} strokeWidth={2} aria-hidden="true" />
+                  </div>
+                  <div className="min-w-0">
+                    <span className="block truncate text-body-sm font-semibold text-ink">{t(a.roleKey)}</span>
+                    <span className="block truncate font-mono text-caption text-muted">{a.username}</span>
+                  </div>
+                </div>
+                <span className="shrink-0 rounded-md bg-surface-2 px-2.5 py-1 text-caption font-medium text-muted transition-colors group-hover:bg-primary-soft group-hover:text-primary">
+                  {t('auth.signIn')}
                 </span>
               </button>
             </li>

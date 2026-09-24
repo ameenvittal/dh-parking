@@ -301,16 +301,29 @@ function EventDialog({ event, onClose, onSaved }: { event: EventListItem | null;
                 <Button variant="secondary" size="md" className={ADMIN_BTN} icon={<MapPin size={16} strokeWidth={1.75} aria-hidden="true" />} onClick={() => setPicking((p) => !p)}>
                   {t('admin.events.dialog.pickOnMap')}
                 </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="md"
+                  className={ADMIN_BTN}
+                  onClick={() => {
+                    setCenter([75.9075, 11.0504])
+                    if (!venue) setVenue('Darul Huda Islamic University, Chemmad')
+                    toast.info('Location set to Darul Huda Islamic University')
+                  }}
+                >
+                  Darul Huda
+                </Button>
               </div>
             </Field>
             <Field label={t('admin.events.dialog.zoom')} htmlFor="ev-zoom">
               <Input id="ev-zoom" type="number" min={14} max={20} step={0.5} value={zoom} onChange={(e) => setZoom(e.target.value)} />
             </Field>
           </div>
-          {picking && event ? (
+          {picking ? (
             <div className="flex flex-col gap-2">
               <p className="text-body-sm text-muted">{t('admin.events.dialog.pickHelp')}</p>
-              <CenterPicker eventId={event.id} center={center} onPick={setCenter} />
+              <CenterPicker eventId={event?.id} center={center} onPick={setCenter} />
             </div>
           ) : null}
           <DialogFooter>
@@ -328,8 +341,10 @@ function EventDialog({ event, onClose, onSaved }: { event: EventListItem | null;
 }
 
 /** Small map: click to set the event center. */
-function CenterPicker({ eventId, center, onPick }: { eventId: string; center: LngLat; onPick: (c: LngLat) => void }) {
-  const { eventMap } = useMapData(eventId, { withStatuses: false })
+function CenterPicker({ eventId, center, onPick }: { eventId?: string | null; center: LngLat; onPick: (c: LngLat) => void }) {
+  const { eventId: currentEventId } = useAdminEvent()
+  const effectiveId = eventId || currentEventId || ''
+  const { eventMap } = useMapData(effectiveId, { withStatuses: false })
   if (!eventMap) return <Skeleton className="h-56 w-full rounded-lg" />
   return (
     <div className="h-56 overflow-hidden rounded-lg border border-line">

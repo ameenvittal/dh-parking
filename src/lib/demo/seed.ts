@@ -21,7 +21,8 @@ import { centroidOf, lineLengthM, newId } from './core'
  * The campus is about 220 m by 260 m so it reads well at zoom 17 to 18.
  */
 
-export const CENTER: LngLat = [76.6, 8.88]
+export const DARUL_HUDA_CENTER: LngLat = [75.9075, 11.0504]
+export const CENTER: LngLat = DARUL_HUDA_CENTER
 const M_PER_DEG_LAT = 110_574
 const M_PER_DEG_LNG = 111_320 * Math.cos((CENTER[1] * Math.PI) / 180)
 
@@ -102,8 +103,8 @@ export function buildSeed(now: number = Date.now()): { db: DemoDb; ids: SeedIds 
 
   const event: EventRow = {
     id: eventId,
-    name: 'Demo Fest',
-    venue_name: 'Demo College campus',
+    name: 'Darul Huda Fest',
+    venue_name: 'Darul Huda Islamic University, Chemmad',
     starts_at: new Date(now - 2 * 3600_000).toISOString(),
     ends_at: new Date(now + 6 * 3600_000).toISOString(),
     timezone: 'Asia/Kolkata',

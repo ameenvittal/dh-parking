@@ -131,6 +131,10 @@
   },
   "dashboard": {
     "title": "Dashboard",
+    "liveOverview": "Live overview",
+    "capacityOverview": "{{occupied}} of {{total}} slots occupied ({{pct}}%)",
+    "movingCount": "{{count}} moving",
+    "refresh": "Refresh",
     "kpi": {
       "free": "Free",
       "onTheWay": "On the way",
@@ -233,6 +237,8 @@
     "export": "Export",
     "exportExcel": "Excel of this list",
     "exported": "Export ready",
+    "viewCards": "Cards",
+    "viewTable": "Table",
     "columns": {
       "plate": "Plate",
       "type": "Type",

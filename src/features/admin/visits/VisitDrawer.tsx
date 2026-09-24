@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Copy, ImageOff } from 'lucide-react'
+import { ArrowRightLeft, CircleCheck, CircleX, Copy, ImageOff, LogOut, MessageCircle } from 'lucide-react'
 import { useCallback, useMemo, useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
@@ -25,6 +25,7 @@ import { formatClock, formatDateTime, formatInr, formatPlate, localName } from '
 import { formatPhone } from '@/lib/phone'
 import { queryKeys } from '@/lib/queryKeys'
 import { useRealtime } from '@/lib/realtime'
+import { cn } from '@/lib/utils'
 import type { VisitDetail, VisitEventRow } from '@/types/domain'
 import { listStaff } from '../staff/api'
 import { ADMIN_BTN } from '../components/buttonSizes'
@@ -324,32 +325,69 @@ function VisitActions({ detail: d }: { detail: VisitDetail }) {
   return (
     <>
       <div className="flex w-full flex-wrap gap-2">
-        {action('slot', active ? null : notActive, (dis) => (
-          <Button variant="secondary" size="md" className={ADMIN_BTN} disabled={dis} onClick={() => setSlotOpen(true)}>
-            {t('admin.vehicles.actions.changeSlot')}
-          </Button>
-        ))}
-        {action('resend', !active ? notActive : !d.driver ? t('admin.vehicles.actions.noPhone') : null, (dis) => (
-          <Button variant="secondary" size="md" className={ADMIN_BTN} disabled={dis} loading={resend.isPending} onClick={() => resend.mutate()}>
-            {t('admin.vehicles.actions.resendLink')}
-          </Button>
-        ))}
-        {action('exit', active ? null : notActive, (dis) => (
-          <Button variant="secondary" size="md" className={ADMIN_BTN} disabled={dis} onClick={() => setExitOpen(true)}>
-            {t('admin.vehicles.actions.markExit')}
-          </Button>
-        ))}
         {action(
           'confirm',
           v.status === 'confirmed' ? t('admin.vehicles.actions.alreadyConfirmed') : active ? null : notActive,
           (dis) => (
-            <Button variant="secondary" size="md" className={ADMIN_BTN} disabled={dis} loading={confirm.isPending} onClick={() => confirm.mutate()}>
+            <Button
+              variant="primary"
+              size="md"
+              className={ADMIN_BTN}
+              disabled={dis}
+              loading={confirm.isPending}
+              icon={<CircleCheck size={16} strokeWidth={2.25} />}
+              onClick={() => confirm.mutate()}
+            >
               {t('admin.vehicles.actions.confirmParked')}
             </Button>
           ),
         )}
+        {action('slot', active ? null : notActive, (dis) => (
+          <Button
+            variant="secondary"
+            size="md"
+            className={cn(ADMIN_BTN, 'hover:border-primary hover:text-primary hover:bg-primary-soft/60')}
+            disabled={dis}
+            icon={<ArrowRightLeft size={16} strokeWidth={2} />}
+            onClick={() => setSlotOpen(true)}
+          >
+            {t('admin.vehicles.actions.changeSlot')}
+          </Button>
+        ))}
+        {action('resend', !active ? notActive : !d.driver ? t('admin.vehicles.actions.noPhone') : null, (dis) => (
+          <Button
+            variant="secondary"
+            size="md"
+            className={cn(ADMIN_BTN, 'hover:border-primary hover:text-primary hover:bg-primary-soft/60')}
+            disabled={dis}
+            loading={resend.isPending}
+            icon={<MessageCircle size={16} strokeWidth={2} />}
+            onClick={() => resend.mutate()}
+          >
+            {t('admin.vehicles.actions.resendLink')}
+          </Button>
+        ))}
+        {action('exit', active ? null : notActive, (dis) => (
+          <Button
+            variant="secondary"
+            size="md"
+            className={cn(ADMIN_BTN, 'hover:border-line-strong hover:bg-surface-2')}
+            disabled={dis}
+            icon={<LogOut size={16} strokeWidth={2} />}
+            onClick={() => setExitOpen(true)}
+          >
+            {t('admin.vehicles.actions.markExit')}
+          </Button>
+        ))}
         {action('cancel', beforeParked ? null : t('admin.vehicles.actions.cancelOnlyBeforeParked'), (dis) => (
-          <Button variant="danger-ghost" size="md" className={ADMIN_BTN} disabled={dis} onClick={() => setCancelOpen(true)}>
+          <Button
+            variant="danger-soft"
+            size="md"
+            className={ADMIN_BTN}
+            disabled={dis}
+            icon={<CircleX size={16} strokeWidth={2} />}
+            onClick={() => setCancelOpen(true)}
+          >
             {t('admin.vehicles.actions.cancel')}
           </Button>
         ))}
