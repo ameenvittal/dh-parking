@@ -3,7 +3,6 @@
 Every server operation the client may call. If it is not in this file, it does not exist.
 
 Conventions:
-
 - RPCs are `language plpgsql security definer set search_path = public`. First line of each: role check. Revoke `execute` from `public, anon`; grant to `authenticated` (or to `service_role` only where marked).
 - RPC arguments are prefixed `p_`. Return types are `jsonb` unless stated.
 - Errors: `raise exception using errcode = 'P0001', message = '<CODE>';`
@@ -12,27 +11,27 @@ Conventions:
 
 ## 1. Error codes
 
-| Code                 | Meaning                            | Shown to user (en)                              |
-| -------------------- | ---------------------------------- | ----------------------------------------------- |
-| `FORBIDDEN`          | Role not allowed                   | You don't have access to this                   |
-| `NO_LIVE_EVENT`      | No event is live                   | No event is live right now                      |
-| `EVENT_CLOSED`       | Event is closed                    | This event has ended                            |
-| `NOT_FOUND`          | Row missing                        | Not found                                       |
-| `SLOT_TAKEN`         | Slot not available anymore         | That slot was just taken. Pick another          |
-| `SLOT_TYPE_MISMATCH` | Slot vehicle type differs          | This slot is for a different vehicle type       |
-| `SLOT_BLOCKED`       | Slot blocked                       | This slot is blocked                            |
-| `PLATE_ACTIVE`       | Plate has an active visit          | This vehicle is already checked in              |
-| `INVALID_PHONE`      | Not a valid Indian mobile          | Enter a valid 10-digit mobile number            |
-| `INVALID_STATE`      | Transition not allowed             | This action isn't possible right now            |
-| `HAS_ACTIVE_VISIT`   | Delete blocked                     | A vehicle is parked here (plate in message)     |
-| `GEOMETRY_INVALID`   | Bad or self-intersecting geometry  | Shape is invalid. Redraw it                     |
-| `OUTSIDE_ZONE`       | Slot not within zone               | Slot must be inside its zone                    |
-| `OVERLAP`            | Slot overlaps another              | Slot overlaps another slot                      |
-| `TOKEN_INVALID`      | Driver token bad, expired, revoked | This link has expired                           |
-| `RATE_LIMITED`       | Too many requests                  | Too many tries. Wait a few minutes              |
-| `AI_FAILED`          | Gemini error or timeout            | Couldn't read the photo. Enter details manually |
-| `WA_FAILED`          | WhatsApp send failed               | WhatsApp message failed. Show the QR code       |
-| `USERNAME_TAKEN`     | Staff username exists              | Username is already used                        |
+| Code | Meaning | Shown to user (en) |
+|---|---|---|
+| `FORBIDDEN` | Role not allowed | You don't have access to this |
+| `NO_LIVE_EVENT` | No event is live | No event is live right now |
+| `EVENT_CLOSED` | Event is closed | This event has ended |
+| `NOT_FOUND` | Row missing | Not found |
+| `SLOT_TAKEN` | Slot not available anymore | That slot was just taken. Pick another |
+| `SLOT_TYPE_MISMATCH` | Slot vehicle type differs | This slot is for a different vehicle type |
+| `SLOT_BLOCKED` | Slot blocked | This slot is blocked |
+| `PLATE_ACTIVE` | Plate has an active visit | This vehicle is already checked in |
+| `INVALID_PHONE` | Not a valid Indian mobile | Enter a valid 10-digit mobile number |
+| `INVALID_STATE` | Transition not allowed | This action isn't possible right now |
+| `HAS_ACTIVE_VISIT` | Delete blocked | A vehicle is parked here (plate in message) |
+| `GEOMETRY_INVALID` | Bad or self-intersecting geometry | Shape is invalid. Redraw it |
+| `OUTSIDE_ZONE` | Slot not within zone | Slot must be inside its zone |
+| `OVERLAP` | Slot overlaps another | Slot overlaps another slot |
+| `TOKEN_INVALID` | Driver token bad, expired, revoked | This link has expired |
+| `RATE_LIMITED` | Too many requests | Too many tries. Wait a few minutes |
+| `AI_FAILED` | Gemini error or timeout | Couldn't read the photo. Enter details manually |
+| `WA_FAILED` | WhatsApp send failed | WhatsApp message failed. Show the QR code |
+| `USERNAME_TAKEN` | Staff username exists | Username is already used |
 
 ## 2. Visit and slot state machine
 
@@ -66,28 +65,28 @@ Conventions:
    admin reassign allowed from confirmed too
 ```
 
-| From                              | To                  | Actor                        | Function                            |
-| --------------------------------- | ------------------- | ---------------------------- | ----------------------------------- |
-| (new)                             | assigned            | gate, admin                  | `gate-checkin` → `assign_new_visit` |
-| assigned                          | en_route            | driver                       | `driver_start_navigation`           |
-| assigned, en_route                | driver_parked       | driver                       | `driver_mark_parked`                |
-| assigned, en_route, driver_parked | confirmed           | zone (own zone), admin       | `zone_confirm_parked`               |
-| any active                        | exited              | gate, zone (own zone), admin | `mark_exit`                         |
-| assigned, en_route                | cancelled           | gate, admin                  | `cancel_visit`                      |
-| assigned, en_route, driver_parked | assigned (new slot) | gate, admin                  | `visit-reassign` → `reassign_visit` |
-| confirmed                         | assigned (new slot) | admin only                   | same                                |
+| From | To | Actor | Function |
+|---|---|---|---|
+| (new) | assigned | gate, admin | `gate-checkin` → `assign_new_visit` |
+| assigned | en_route | driver | `driver_start_navigation` |
+| assigned, en_route | driver_parked | driver | `driver_mark_parked` |
+| assigned, en_route, driver_parked | confirmed | zone (own zone), admin | `zone_confirm_parked` |
+| any active | exited | gate, zone (own zone), admin | `mark_exit` |
+| assigned, en_route | cancelled | gate, admin | `cancel_visit` |
+| assigned, en_route, driver_parked | assigned (new slot) | gate, admin | `visit-reassign` → `reassign_visit` |
+| confirmed | assigned (new slot) | admin only | same |
 
 ### Slot status
 
-| Event                                     | Slot change                                       |
-| ----------------------------------------- | ------------------------------------------------- |
-| Visit assigned                            | available → assigned, `current_visit_id` set      |
-| Driver marks parked or volunteer confirms | assigned → occupied                               |
-| Exit, cancel                              | → available, `current_visit_id` null              |
-| Reassign                                  | old slot → available; new slot → assigned         |
-| Wrong slot correction                     | assigned slot → available; actual slot → occupied |
-| Admin block                               | available → blocked (only from available)         |
-| Admin unblock                             | blocked → available                               |
+| Event | Slot change |
+|---|---|
+| Visit assigned | available → assigned, `current_visit_id` set |
+| Driver marks parked or volunteer confirms | assigned → occupied |
+| Exit, cancel | → available, `current_visit_id` null |
+| Reassign | old slot → available; new slot → assigned |
+| Wrong slot correction | assigned slot → available; actual slot → occupied |
+| Admin block | available → blocked (only from available) |
+| Admin unblock | blocked → available |
 
 Every function that changes a slot does `select ... for update` on the slot row first.
 
@@ -126,19 +125,19 @@ Roles: staff. Drivers get only their own slot through their visit.
 
 All require `is_admin()`. All validate with `ST_IsValid`; invalid → `GEOMETRY_INVALID`. After each successful call, the client broadcasts `map-updated` on `event:<id>:map`.
 
-| RPC                                               | Arguments                                                                                                                                | Logic                                                                                                                                                                                                                                                      |
-| ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- | --- | --- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `admin_upsert_gate`                               | p_id uuid null, p_event_id, p_name, p_name_ml, p_kind, p_point jsonb (GeoJSON Point)                                                     | insert or update                                                                                                                                                                                                                                           |
-| `admin_delete_gate`                               | p_id                                                                                                                                     | plain delete. Visit foreign keys to gates use `on delete set null`                                                                                                                                                                                         |
-| `admin_upsert_zone`                               | p_id, p_event_id, p_code, p_name, p_name_ml, p_color, p_polygon jsonb, p_vehicle_types, p_categories, p_is_overflow, p_priority, p_notes | on update of `code`, relabel all slots `code-number` in the same transaction. On update of `area`, reject if any existing slot of this zone is not within the new area (`OUTSIDE_ZONE`, message lists up to 5 labels)                                      |
-| `admin_delete_zone`                               | p_id                                                                                                                                     | reject with `HAS_ACTIVE_VISIT` if any slot has an active visit; else delete slots then zone                                                                                                                                                                |
-| `admin_upsert_slots`                              | p_zone_id, p_slots jsonb array of `{id?, number, polygon, vehicle_type, is_accessible, has_ev_charger}`                                  | for each: validate within zone (`ST_Within(shape, ST_Buffer(zone.area::geography, 0.5)::geometry)`), validate overlap with other slots in event (`ST_Area(ST_Intersection(a,b)::geography) > 0.1 * ST_Area(a::geography)` → `OVERLAP`), label = `zone.code |     | '-' |     | lpad(number::text,3,'0')`, upsert. Changing `vehicle_type`of a slot with an active visit →`HAS_ACTIVE_VISIT`. Return saved slots |
-| `admin_delete_slots`                              | p_ids uuid[]                                                                                                                             | reject all if any has an active visit (`HAS_ACTIVE_VISIT` with plates)                                                                                                                                                                                     |
-| `admin_set_slots_status`                          | p_ids uuid[], p_status ('available' or 'blocked'), p_reason text                                                                         | only from available→blocked or blocked→available. Skips slots in other states and returns `{updated: n, skipped: [labels]}`                                                                                                                                |
-| `admin_set_slots_props`                           | p_ids uuid[], p_vehicle_type null, p_is_accessible null, p_has_ev_charger null                                                           | bulk edit, null = unchanged                                                                                                                                                                                                                                |
-| `admin_save_road_network`                         | p_event_id, p_nodes jsonb `[{id, coord}]`, p_segments jsonb `[{id, from, to, coords, direction, name, walk_only}]`                       | in one transaction: delete all segments and nodes of the event, insert new ones. Validate: every segment's first coord within 1.5 m of its from node, last within 1.5 m of its to node, length ≥ 1 m. Returns counts                                       |
-| `admin_upsert_landmark` / `admin_delete_landmark` | usual                                                                                                                                    |                                                                                                                                                                                                                                                            |
-| `admin_upsert_overlay` / `admin_delete_overlay`   | p_storage_path, p_corners, p_opacity, p_is_visible                                                                                       |                                                                                                                                                                                                                                                            |
+| RPC | Arguments | Logic |
+|---|---|---|
+| `admin_upsert_gate` | p_id uuid null, p_event_id, p_name, p_name_ml, p_kind, p_point jsonb (GeoJSON Point) | insert or update |
+| `admin_delete_gate` | p_id | plain delete. Visit foreign keys to gates use `on delete set null` |
+| `admin_upsert_zone` | p_id, p_event_id, p_code, p_name, p_name_ml, p_color, p_polygon jsonb, p_vehicle_types, p_categories, p_is_overflow, p_priority, p_notes | on update of `code`, relabel all slots `code-number` in the same transaction. On update of `area`, reject if any existing slot of this zone is not within the new area (`OUTSIDE_ZONE`, message lists up to 5 labels) |
+| `admin_delete_zone` | p_id | reject with `HAS_ACTIVE_VISIT` if any slot has an active visit; else delete slots then zone |
+| `admin_upsert_slots` | p_zone_id, p_slots jsonb array of `{id?, number, polygon, vehicle_type, is_accessible, has_ev_charger}` | for each: validate within zone (`ST_Within(shape, ST_Buffer(zone.area::geography, 0.5)::geometry)`), validate overlap with other slots in event (`ST_Area(ST_Intersection(a,b)::geography) > 0.1 * ST_Area(a::geography)` → `OVERLAP`), label = `zone.code || '-' || lpad(number::text,3,'0')`, upsert. Changing `vehicle_type` of a slot with an active visit → `HAS_ACTIVE_VISIT`. Return saved slots |
+| `admin_delete_slots` | p_ids uuid[] | reject all if any has an active visit (`HAS_ACTIVE_VISIT` with plates) |
+| `admin_set_slots_status` | p_ids uuid[], p_status ('available' or 'blocked'), p_reason text | only from available→blocked or blocked→available. Skips slots in other states and returns `{updated: n, skipped: [labels]}` |
+| `admin_set_slots_props` | p_ids uuid[], p_vehicle_type null, p_is_accessible null, p_has_ev_charger null | bulk edit, null = unchanged |
+| `admin_save_road_network` | p_event_id, p_nodes jsonb `[{id, coord}]`, p_segments jsonb `[{id, from, to, coords, direction, name, walk_only}]` | in one transaction: delete all segments and nodes of the event, insert new ones. Validate: every segment's first coord within 1.5 m of its from node, last within 1.5 m of its to node, length ≥ 1 m. Returns counts |
+| `admin_upsert_landmark` / `admin_delete_landmark` | usual | |
+| `admin_upsert_overlay` / `admin_delete_overlay` | p_storage_path, p_corners, p_opacity, p_is_visible | |
 
 ## 4. Visit and gate RPCs (migration `rpc_visits`)
 
@@ -147,7 +146,6 @@ All require `is_admin()`. All validate with `ST_IsValid`; invalid → `GEOMETRY_
 Roles: gate_volunteer, admin.
 
 Logic:
-
 1. Effective type: `other` → try zones allowing `other`, else treat as `car`.
 2. Candidate slots: `status = 'available'`, `vehicle_type = effective type`, zone `vehicle_types` contains the type.
 3. Category match: zone `categories` is empty OR contains `p_category`. If `p_category = 'general'`, only zones with empty categories or containing `general`.
@@ -178,7 +176,6 @@ Called only by `gate-checkin`.
 Arguments: p_event_id, p_driver_id, p_actor_id, p_gate_id, p_slot_id, p_plate_raw, p_vehicle_type, p_vehicle_color, p_vehicle_make, p_category, p_pass_number, p_pass_holder_name, p_needs_accessible, p_photo_path, p_ai_result jsonb, p_ai_plate_confidence, p_ai_edited, p_fee_amount, p_payment_method, p_allow_duplicate boolean, p_checkin_duration_ms int.
 
 Steps:
-
 1. Event must be `live` → else `NO_LIVE_EVENT`.
 2. `plate := normalize_plate(p_plate_raw)`. If an active visit exists for plate and not `p_allow_duplicate` → `PLATE_ACTIVE`.
 3. `select * from slots where id = p_slot_id for update`. Not found → `NOT_FOUND`. `status = 'blocked'` → `SLOT_BLOCKED`. `status <> 'available'` → `SLOT_TAKEN`. Type mismatch (after `other`→`car` rule) → `SLOT_TYPE_MISMATCH`.
@@ -192,7 +189,6 @@ The unique partial indexes are the last line of defence; a unique violation is m
 ### `reassign_visit(p_visit_id uuid, p_new_slot_id uuid, p_actor_id uuid, p_actor_role app_role) returns jsonb` — service role only
 
 Called by `visit-reassign`.
-
 1. Lock visit. Must be active. If `confirmed` and actor is not admin → `INVALID_STATE`.
 2. Lock new slot; same checks as assign step 3.
 3. Old slot → available, `current_visit_id` null.
@@ -215,7 +211,6 @@ Role: driver. On the active visit: if status `assigned` → `en_route`; set `nav
 ### `driver_mark_parked(p_lng numeric, p_lat numeric, p_accuracy_m numeric) returns jsonb`
 
 Role: driver.
-
 1. Active visit with status in `assigned, en_route` → else `INVALID_STATE`. (If already `driver_parked` or `confirmed`, return current state without error.)
 2. Distance: `ST_Distance(point::geography, slot.shape::geography)`. If lng/lat null (location denied), distance null.
 3. Visit: `status = 'driver_parked'`, `driver_parked_at`, `driver_parked_location`, `driver_parked_distance_m`.
@@ -244,7 +239,6 @@ Returns visits with status in `assigned, en_route, driver_parked, confirmed` plu
 ### `zone_confirm_parked(p_visit_id uuid, p_actual_slot_id uuid default null, p_note text default null) returns jsonb`
 
 Role: zone_volunteer (visit zone in own zones, and `p_actual_slot_id` zone in own zones), admin.
-
 1. Lock visit. Status must be `assigned, en_route, driver_parked` → else `INVALID_STATE` (if already `confirmed`, return current).
 2. If `p_actual_slot_id` is null or equals `visit.slot_id`: slot → occupied; visit → `confirmed`, `confirmed_at`, `confirmed_by`. Resolve open `not_arrived`, `confirm_pending`, `location_mismatch` alerts for this visit with note `confirmed`. Log `confirmed`.
 3. Else (wrong slot): lock actual slot; must be `available` (else `SLOT_TAKEN`) and same vehicle type group (car/ev/other interchangeable for this check; bike and bus strict), else `SLOT_TYPE_MISMATCH`. Old slot → available; actual slot → occupied with `current_visit_id`; visit `slot_id`, `zone_id` updated, `confirmed`. Insert alert `wrong_slot` with status `open`, message `"Assigned <old>, parked in <new>"`, raised_by_profile. Log `wrong_slot_corrected` and `confirmed`.
@@ -341,7 +335,6 @@ Defined in `docs/09-REPORTS.md`.
 ## 8. Edge Functions
 
 Common rules:
-
 - `supabase/functions/<name>/index.ts` with `Deno.serve`.
 - CORS through `_shared/cors.ts` (allow `APP_URL` origin and localhost in dev).
 - Auth: `requireRole(req, ['gate_volunteer','admin'])` reads the `Authorization` bearer, calls `auth.getUser(jwt)`, decodes claims, returns `{userId, role, claims}` or throws `FORBIDDEN`.
@@ -356,7 +349,6 @@ Role: gate_volunteer, admin. Details of the Gemini call in `docs/08-WHATSAPP-AND
 Request: `{ "photo_paths": ["<event>/<date>/<uuid>.jpg"], "event_id": "uuid" }` (1 or 2 photos).
 
 Steps:
-
 1. Download each photo from `vehicle-photos` with service role.
 2. Call Gemini with the images, prompt, and schema. Timeout 12 s (`AbortController`).
 3. Post-process: `plate = normalizePlate(plate_number)`; `plate_valid = isValidIndianPlate(plate)`; clamp confidences to 0..1; map unknown enum values to `null`.
@@ -382,7 +374,6 @@ Request:
 ```
 
 Steps:
-
 1. `requireRole`. If gate volunteer has non-empty `gate_ids`, `gate_id` must be in it.
 2. `phone_e164 = normalizeIndianPhone(phone)` using libphonenumber-js rules: 10 digits starting 6-9 → `+91…`. Invalid → `INVALID_PHONE`.
 3. Load event; must be live.
@@ -407,7 +398,6 @@ The link is returned to the gate device only for the QR code. It is never logged
 Public. Rate limit 20 per IP per 10 minutes.
 
 Request `{ "token": "<raw>" }`.
-
 1. Hash, look up token. Missing, revoked, or expired → 401 `TOKEN_INVALID`.
 2. Load driver; ensure `auth_user_id` exists.
 3. `auth.admin.generateLink({ type: 'magiclink', email: <driver synthetic email> })` → `properties.hashed_token`.
@@ -421,7 +411,6 @@ Client: `supabase.auth.verifyOtp({ token_hash, type: 'magiclink' })`, then `i18n
 Public. Rate limit 3 per phone per hour and 20 per IP per hour.
 
 Request `{ "phone": "9876543210" }`.
-
 1. Normalise phone. Invalid → 400 `INVALID_PHONE`.
 2. Live event required; if none, still return the generic success.
 3. Find driver in the live event with an active visit or a visit exited in the last 12 hours.
@@ -432,7 +421,6 @@ Request `{ "phone": "9876543210" }`.
 
 Role: gate_volunteer, admin.
 Request `{ "visit_id", "new_slot_id", "notify": true }`.
-
 1. Call `reassign_visit`.
 2. If `notify`: send template `parking_slot_changed` to the driver with a fresh token link. Insert message row.
 3. Return `{ slot, whatsapp }`.
@@ -440,7 +428,6 @@ Request `{ "visit_id", "new_slot_id", "notify": true }`.
 ### 8.6 `whatsapp-webhook`
 
 Public.
-
 - GET: if `hub.mode=subscribe` and `hub.verify_token == WHATSAPP_VERIFY_TOKEN` return `hub.challenge`, else 403.
 - POST: verify `X-Hub-Signature-256` (HMAC SHA-256 of raw body with `WHATSAPP_APP_SECRET`). Invalid → 401.
   - `statuses[]`: update `whatsapp_messages` by `wa_message_id`. Only move forward: queued < sent < delivered < read. `failed` always applies. Store `errors[0].code/title`.
@@ -450,7 +437,6 @@ Public.
 ### 8.7 `alert-dispatch`
 
 Called by a Supabase Database Webhook on `alerts` INSERT where `type = 'sos'`. The webhook sends header `x-webhook-secret` = a secret stored with `supabase secrets set ALERT_WEBHOOK_SECRET=...`; the function rejects other calls.
-
 1. Load alert, driver phone, visit plate, slot label, event `admin_alert_phones`.
 2. Send template `sos_admin_alert` to each admin phone.
 3. Insert message rows (driver_id null).
@@ -459,13 +445,13 @@ Called by a Supabase Database Webhook on `alerts` INSERT where `type = 'sos'`. T
 
 Role: admin. Request `{ "action": "create" | "update" | "deactivate" | "activate" | "reset_password", ... }`.
 
-| Action         | Input                                                                               | Logic                                                                                                                                                |
-| -------------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| create         | username, full_name, role (not driver), phone, zone_ids, gate_ids, password (min 8) | check username free (`USERNAME_TAKEN`), `auth.admin.createUser({email: username@STAFF_EMAIL_DOMAIN, password, email_confirm: true})`, insert profile |
-| update         | id, full_name, role, phone, zone_ids, gate_ids, preferred_language                  | update profile, then `auth.admin.signOut(id)` if role or zones changed so new claims apply                                                           |
-| deactivate     | id                                                                                  | `is_active = false`, `auth.admin.signOut(id)`. An admin cannot deactivate themselves                                                                 |
-| activate       | id                                                                                  | `is_active = true`                                                                                                                                   |
-| reset_password | id, password                                                                        | `auth.admin.updateUserById(id, {password})`, sign out                                                                                                |
+| Action | Input | Logic |
+|---|---|---|
+| create | username, full_name, role (not driver), phone, zone_ids, gate_ids, password (min 8) | check username free (`USERNAME_TAKEN`), `auth.admin.createUser({email: username@STAFF_EMAIL_DOMAIN, password, email_confirm: true})`, insert profile |
+| update | id, full_name, role, phone, zone_ids, gate_ids, preferred_language | update profile, then `auth.admin.signOut(id)` if role or zones changed so new claims apply |
+| deactivate | id | `is_active = false`, `auth.admin.signOut(id)`. An admin cannot deactivate themselves |
+| activate | id | `is_active = true` |
+| reset_password | id, password | `auth.admin.updateUserById(id, {password})`, sign out |
 
 Username is immutable after create.
 
@@ -480,21 +466,21 @@ Response `{ "reply": "markdown", "tools_used": [ { "name", "args", "ms" } ] }`.
 
 Create in the dashboard or via migration using `supabase_functions.http_request` trigger:
 
-| Name           | Table  | Event  | Condition                                       | Target                                          |
-| -------------- | ------ | ------ | ----------------------------------------------- | ----------------------------------------------- |
+| Name | Table | Event | Condition | Target |
+|---|---|---|---|---|
 | `sos_dispatch` | alerts | INSERT | inside function: return early unless type = sos | `alert-dispatch` with header `x-webhook-secret` |
 
 ## 10. Client API wrappers
 
 Each feature's `api.ts` exports typed functions. Names are fixed:
 
-| File                      | Functions                                                                                                                                                                                                                                                                                                     |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `features/auth/api.ts`    | `staffSignIn`, `signOut`, `exchangeDriverToken`, `requestDriverLink`                                                                                                                                                                                                                                          |
-| `features/map/api.ts`     | `fetchEventMap`, `fetchSlotStatuses`                                                                                                                                                                                                                                                                          |
-| `features/gate/api.ts`    | `uploadVehiclePhoto`, `extractVehicle`, `findActiveVisitByPlate`, `suggestSlots`, `gateCheckin`, `searchVisits`, `reassignVisit`, `cancelVisit`, `markExit`, `resendDriverLink` (calls `driver-resend-link` with the visit's phone)                                                                           |
-| `features/driver/api.ts`  | `getMyVisit`, `acceptLocationConsent`, `startNavigation`, `markParked`, `recordPosition`, `raiseSos`                                                                                                                                                                                                          |
-| `features/zone/api.ts`    | `getZoneVisits`, `confirmParked`, `flagNotHere`, `reportWrongParking`, `uploadAlertPhoto`, `markExit`                                                                                                                                                                                                         |
+| File | Functions |
+|---|---|
+| `features/auth/api.ts` | `staffSignIn`, `signOut`, `exchangeDriverToken`, `requestDriverLink` |
+| `features/map/api.ts` | `fetchEventMap`, `fetchSlotStatuses` |
+| `features/gate/api.ts` | `uploadVehiclePhoto`, `extractVehicle`, `findActiveVisitByPlate`, `suggestSlots`, `gateCheckin`, `searchVisits`, `reassignVisit`, `cancelVisit`, `markExit`, `resendDriverLink` (calls `driver-resend-link` with the visit's phone) |
+| `features/driver/api.ts` | `getMyVisit`, `acceptLocationConsent`, `startNavigation`, `markParked`, `recordPosition`, `raiseSos` |
+| `features/zone/api.ts` | `getZoneVisits`, `confirmParked`, `flagNotHere`, `reportWrongParking`, `uploadAlertPhoto`, `markExit` |
 | `features/admin/*/api.ts` | `getDashboardSummary`, `getRecentActivity`, `getLiveVehicles`, `getRoadTraffic`, `getVisitDetail`, `updateAlert`, editor `admin_*` wrappers, `staffAction`, `askAssistant`, report wrappers, event CRUD (`upsertEvent`, `setEventLive`, `closeEvent` via RPCs `admin_upsert_event`, `admin_set_event_status`) |
 
 ### Event RPCs

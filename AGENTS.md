@@ -11,19 +11,16 @@ Instructions for any AI coding agent or developer working in this repository. Fo
 ## 2. Hard rules
 
 ### Scope
-
 - Do not add features, screens, settings, fields, or copy that are not in the docs. No "nice to have" extras.
 - Do not rename routes, tables, columns, enums, RPCs, Edge Functions, or i18n keys defined in the docs.
 - If the docs are ambiguous, check `docs/01-PRD.md` section "Decisions already made". If still unclear, leave a `// TODO(docs): <question>` and ask.
 
 ### Stack
-
 - Only the libraries listed in `docs/02-ARCHITECTURE.md` section 3. Adding a dependency requires updating that list in the same PR with a one-line reason.
 - No Next.js, no Redux, no Axios, no Moment, no Leaflet, no Google Maps JS SDK, no Mapbox GL (use MapLibre), no CSS-in-JS, no styled-components.
 - TypeScript `strict: true`. No `any`. No `@ts-ignore`. Use `unknown` plus a zod parse at boundaries.
 
 ### Data and security
-
 - Database changes happen only through new migration files created with `supabase migration new <name>`. Never edit a migration that has been applied to any shared environment.
 - Every table has RLS enabled in the same migration that creates it.
 - The browser never writes directly to `visits`, `slots` status, `alerts` status, `drivers`, `driver_access_tokens`, or `whatsapp_messages`. All mutations go through the RPCs or Edge Functions in `docs/04-BACKEND-SERVICES.md`.
@@ -31,7 +28,6 @@ Instructions for any AI coding agent or developer working in this repository. Fo
 - After any migration, regenerate types: `supabase gen types typescript --local > src/types/database.ts`. Never hand-edit that file.
 
 ### UI
-
 - Use only design tokens from `docs/06-DESIGN-SYSTEM.md`. No raw hex values, no arbitrary Tailwind values like `text-[13px]` or `bg-[#123456]`, except inside `src/styles/theme.css` and map style files in `src/features/map/style/`.
 - Light theme only in v1. Do not add a dark mode toggle.
 - Use shadcn/ui components from `src/components/ui/`. Do not install another component library.
@@ -40,7 +36,6 @@ Instructions for any AI coding agent or developer working in this repository. Fo
 - Every user-visible string goes through i18next (`t('key')`) with keys in both `en` and `ml` files. No hardcoded strings in components.
 
 ### Code style
-
 - Feature folders under `src/features/<feature>/` as described in `docs/02-ARCHITECTURE.md` section 4.
 - Components: PascalCase files, one component per file, named exports. Hooks: `useXxx.ts`. No default exports except route modules if needed by the router.
 - Server state with TanStack Query. Local UI state with `useState`. Cross-screen client state (gate wizard, map editor) with the zustand stores defined in the docs only.
