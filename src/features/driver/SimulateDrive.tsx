@@ -81,7 +81,7 @@ export function SimulateDrive({ buildPath, mode, className }: SimulateDriveProps
       {state === 'idle' ? (
         <button type="button" className={btn} onClick={start}>
           <Play size={20} strokeWidth={1.75} aria-hidden="true" className="text-primary" />
-          {mode === 'drive' ? t('driver.sim.drive') : t('driver.sim.walk')}
+          {mode === 'drive' ? t('driver.driveSim.drive') : t('driver.driveSim.walk')}
         </button>
       ) : (
         <>
@@ -91,7 +91,7 @@ export function SimulateDrive({ buildPath, mode, className }: SimulateDriveProps
             ) : (
               <Play size={20} strokeWidth={1.75} aria-hidden="true" />
             )}
-            {state === 'running' ? t('driver.sim.pause') : t('driver.sim.resume')}
+            {state === 'running' ? t('driver.driveSim.pause') : t('driver.driveSim.resume')}
           </button>
           {state === 'running' ? (
             <button
@@ -102,10 +102,10 @@ export function SimulateDrive({ buildPath, mode, className }: SimulateDriveProps
               }}
             >
               <RouteIcon size={20} strokeWidth={1.75} aria-hidden="true" />
-              {t('driver.sim.offRoute')}
+              {t('driver.driveSim.offRoute')}
             </button>
           ) : null}
-          <button type="button" className={btn} onClick={stop} aria-label={t('driver.sim.stop')} title={t('driver.sim.stop')}>
+          <button type="button" className={btn} onClick={stop} aria-label={t('driver.driveSim.stop')} title={t('driver.driveSim.stop')}>
             <Square size={20} strokeWidth={1.75} aria-hidden="true" />
           </button>
         </>

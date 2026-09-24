@@ -58,7 +58,7 @@ export function ZoneMapView({ eventMap, slotStatuses, zoneIds, visits }: ZoneMap
       <Drawer open={Boolean(slotId)} onOpenChange={(o) => !o && setSlotId(null)}>
         <DrawerContent>
           <DrawerHeader className="flex-row items-center justify-between">
-            <DrawerTitle>{slot ? t('zone.map.slotStatus', { slot: slot.properties.label }) : ''}</DrawerTitle>
+            <DrawerTitle>{slot ? t('zone.zoneMap.slotStatus', { slot: slot.properties.label }) : ''}</DrawerTitle>
             {slotStatus ? <StatusBadge status={slotStatus} vehicleType={slot?.properties.vehicle_type} /> : null}
           </DrawerHeader>
           <DrawerBody>
@@ -73,13 +73,13 @@ export function ZoneMapView({ eventMap, slotStatuses, zoneIds, visits }: ZoneMap
                 slotLabel={visitInSlot.slot_label}
               />
             ) : (
-              <p className="py-4 text-body text-muted">{t('zone.map.slotSheetEmpty')}</p>
+              <p className="py-4 text-body text-muted">{t('zone.zoneMap.slotSheetEmpty')}</p>
             )}
           </DrawerBody>
           {visitInSlot ? (
             <DrawerFooter>
               <Button size="lg" block onClick={() => void navigate(`/zone/visit/${visitInSlot.id}`)}>
-                {t('zone.map.openVehicle')}
+                {t('zone.zoneMap.openVehicle')}
               </Button>
             </DrawerFooter>
           ) : null}

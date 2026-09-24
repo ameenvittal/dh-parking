@@ -96,7 +96,7 @@ export function WrongSlotSheet({ open, onOpenChange, eventId, zoneIds, visit, on
                   if (eligible.has(id)) setPicked(id)
                 }}
                 showZoneLabels={false}
-                ariaLabel={t('zone.map.loading')}
+                ariaLabel={t('zone.zoneMap.loading')}
               />
             ) : null}
           </div>

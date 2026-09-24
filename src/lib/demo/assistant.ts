@@ -186,7 +186,10 @@ export function answer(input: AssistantInput): AssistantReply {
   }
 
   /* zone status */
-  const zoneCode = /zone\s+([a-z0-9]{1,4})\b/i.exec(q)?.[1]?.toUpperCase()
+  const codes = new Set(db.zones.filter((z) => z.event_id === ev.id).map((z) => z.code))
+  const zoneCode = [...q.matchAll(/zone\s+([a-z0-9]{1,4})\b/gi)]
+    .map((m) => m[1].toUpperCase())
+    .find((c) => codes.has(c))
   if (zoneCode || /zone|full|free|space|occupan|സോൺ|ഒഴിവ്/i.test(lower)) {
     const s = timed(used, 'get_zone_status', zoneCode ? { zone_code: zoneCode } : {}, () => getDashboardSummary(ev.id))
     const zones = s.zones.filter((z) => !zoneCode || z.code === zoneCode)

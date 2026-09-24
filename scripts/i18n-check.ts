@@ -13,7 +13,7 @@ import { join } from 'node:path'
 
 const ROOT = join(import.meta.dirname, '..', 'src', 'locales')
 const LANGS = ['en', 'ml'] as const
-const NAMESPACES = ['common', 'driver', 'gate', 'zone', 'admin', 'map', 'reports', 'errors']
+const NAMESPACES = ['common', 'driver', 'gate', 'zone', 'admin', 'map', 'reports', 'errors', 'sim']
 const ENGLISH_ONLY = new Set(['admin', 'reports'])
 
 type Json = { [key: string]: Json } | string | number | boolean | null | Json[]

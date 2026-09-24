@@ -14,7 +14,8 @@ import type {
   VisitorCategory,
 } from '@/types/domain'
 import { distM, insertAlert, isActive, newId } from './core'
-import { mutate, nextSeq, type DemoDb } from './db'
+import { mutate, nextSeq, readDb, type DemoDb } from './db'
+import { getSession } from './session'
 import { buildSeed } from './seed'
 import { createToken } from './tokens'
 import type { ActorInfo } from './types'
@@ -95,9 +96,13 @@ function generate(db: DemoDb, ev: EventRow, count: number, tokens: { raw: string
   })
   const activePlates = new Set(db.visits.filter((v) => isActive(v.status)).map((v) => v.plate))
 
-  const times = Array.from({ length: count }, () => start + ((Math.random() + Math.random() + Math.random()) / 3) * (end - start)).sort(
-    (a, b) => a - b,
-  )
+  // Most arrivals follow a peak across the window; about one in ten are in the last few minutes
+  // so there are vehicles on the way and waiting for a volunteer right now.
+  const recent = Math.round(count * 0.1)
+  const times = [
+    ...Array.from({ length: count - recent }, () => start + ((Math.random() + Math.random() + Math.random()) / 3) * (end - start)),
+    ...Array.from({ length: recent }, () => now - rand(1, 13) * 60_000),
+  ].sort((a, b) => a - b)
 
   const log = (v: VisitRow, type: VisitEventType, at: number, actor: ActorInfo | null, data: Record<string, unknown> = {}) =>
     db.visit_events.push({ id: nextSeq(db), visit_id: v.id, event_id: ev.id, type, actor_role: actor?.role ?? null, actor_id: actor?.id ?? null, data, created_at: iso(at) })
@@ -111,7 +116,7 @@ function generate(db: DemoDb, ev: EventRow, count: number, tokens: { raw: string
         ? weighted({ student: 70, staff: 10, volunteer: 10, general: 10 } as Record<VisitorCategory, number>)
         : weighted({ student: 20, guest: 22, general: 18, faculty: 16, vip: 8, staff: 8, volunteer: 4, performer: 4 } as Record<VisitorCategory, number>)
     if (type === 'other') type = 'car'
-    const stay = rand(35, 210) * 60_000
+    const stay = rand(25, 150) * 60_000
     const exitAt = t + stay
     const exited = exitAt < now - 60_000
     const until = exited ? exitAt : Infinity
@@ -346,4 +351,21 @@ function generate(db: DemoDb, ev: EventRow, count: number, tokens: { raw: string
 export function resetDemoData(): void {
   clearPhotos()
   replaceDb(buildSeed().db)
+}
+
+/** Places the simulated GPS can jump to: the live event's first gate and, for a driver tab, their slot. */
+export function demoPlaces(): { gate: [number, number] | null; mySlot: [number, number] | null } {
+  const db = readDb()
+  const ev = db.events.find((e) => e.status === 'live')
+  const gate = ev ? (db.gates.filter((g) => g.event_id === ev.id).sort((a, b) => a.sort_order - b.sort_order)[0] ?? null) : null
+  const session = getSession()
+  let mySlot: [number, number] | null = null
+  if (session?.role === 'driver') {
+    const v = db.visits
+      .filter((x) => x.driver_id === session.driverId && isActive(x.status))
+      .sort((a, b) => b.checked_in_at.localeCompare(a.checked_in_at))[0]
+    const s = v?.slot_id ? db.slots.find((x) => x.id === v.slot_id) : undefined
+    if (s) mySlot = s.center
+  }
+  return { gate: gate?.location ?? null, mySlot }
 }

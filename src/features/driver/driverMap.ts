@@ -21,8 +21,8 @@ export function driverFitBox(visit: DriverVisit, fix: LocationFix | null): Bbox 
   if (!visit.slot) return null
   const pts: LngLat[] = [visit.slot.center]
   const d = distanceToSlot(visit, fix)
+  // With a nearby fix show both; otherwise frame the slot and its surroundings.
   if (fix && d !== null && d < 2000) pts.push([fix.lng, fix.lat])
-  else if (visit.gate) pts.push(visit.gate.location)
   const box = bboxOfPoints(pts)
-  return box ? bufferBbox(box, 40) : null
+  return box ? bufferBbox(box, pts.length > 1 ? 40 : 90) : null
 }

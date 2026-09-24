@@ -183,6 +183,7 @@ function DriverHomeMap({ visit, onSos }: DriverHomeMapProps) {
             fitTo={box ? { bbox: box } : 'event'}
             fitPadding={padding}
             ariaLabel={t('driver.mapLabel')}
+            attribution={{ position: 'top-left', offset: 64 }}
           >
             <UserPuck fix={fix} />
             <FitControls box={box} padding={padding} className="top-20" />
@@ -248,6 +249,28 @@ function DriverHomeMap({ visit, onSos }: DriverHomeMapProps) {
                   <StatusBadge status={status} vehicleType={visit.visit.vehicle_type} className="mt-2 shrink-0" />
                 </div>
                 <PlateChip plate={visit.visit.plate} size="md" className="self-start" />
+                <div className="flex flex-col gap-2">
+                  {status === 'assigned' || status === 'en_route' ? (
+                    <>
+                      <Button
+                        size="lg"
+                        block
+                        loading={start.isPending}
+                        icon={<Navigation size={20} strokeWidth={1.75} aria-hidden="true" />}
+                        onClick={() => start.mutate()}
+                      >
+                        {t('driver.startDirections')}
+                      </Button>
+                      <Button variant="secondary" size="md" block onClick={() => setParkOpen(true)}>
+                        {t('driver.markParked')}
+                      </Button>
+                    </>
+                  ) : (
+                    <Button size="lg" block onClick={() => navigate('/driver/find')}>
+                      {t('driver.findVehicle')}
+                    </Button>
+                  )}
+                </div>
                 {distance !== null || visit.landmark ? (
                   <div className="flex flex-col gap-0.5 text-body text-muted">
                     {distance !== null && active ? (
@@ -280,28 +303,6 @@ function DriverHomeMap({ visit, onSos }: DriverHomeMapProps) {
                   </Alert>
                 ) : null}
 
-                <div className="flex flex-col gap-2">
-                  {status === 'assigned' || status === 'en_route' ? (
-                    <>
-                      <Button
-                        size="lg"
-                        block
-                        loading={start.isPending}
-                        icon={<Navigation size={20} strokeWidth={1.75} aria-hidden="true" />}
-                        onClick={() => start.mutate()}
-                      >
-                        {t('driver.startDirections')}
-                      </Button>
-                      <Button variant="secondary" size="md" block onClick={() => setParkOpen(true)}>
-                        {t('driver.markParked')}
-                      </Button>
-                    </>
-                  ) : (
-                    <Button size="lg" block onClick={() => navigate('/driver/find')}>
-                      {t('driver.findVehicle')}
-                    </Button>
-                  )}
-                </div>
               </>
             )}
           </div>

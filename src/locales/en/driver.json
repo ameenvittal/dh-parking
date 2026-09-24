@@ -101,7 +101,7 @@
       "arrive": "Then your slot is ahead"
     }
   },
-  "sim": {
+  "driveSim": {
     "drive": "Simulate drive",
     "walk": "Simulate walk",
     "pause": "Pause",

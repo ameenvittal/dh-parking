@@ -22,6 +22,7 @@ import { requestDriverLink } from './api'
 
 const RESEND_AFTER_S = 60
 const FORM_ID = 'driver-login-form'
+const nowMs = () => Date.now()
 
 /** `/driver/login`: resend the parking link on WhatsApp (docs 07 section 1.3, F-DRV-02). */
 export function DriverLoginPage() {
@@ -31,7 +32,7 @@ export function DriverLoginPage() {
   const [params] = useSearchParams()
   const expired = params.get('expired') === '1'
   const [sentAt, setSentAt] = useState<number | null>(null)
-  const [now, setNow] = useState(() => Date.now())
+  const [now, setNow] = useState(nowMs)
   const [error, setError] = useState<unknown>(null)
 
   const form = useForm<DriverPhoneInput>({ resolver: zodResolver(driverPhoneSchema), defaultValues: { phone: '' } })
@@ -41,7 +42,7 @@ export function DriverLoginPage() {
 
   useEffect(() => {
     if (sentAt === null) return
-    const id = window.setInterval(() => setNow(Date.now()), 1000)
+    const id = window.setInterval(() => setNow(nowMs()), 1000)
     return () => window.clearInterval(id)
   }, [sentAt])
 
@@ -55,14 +56,14 @@ export function DriverLoginPage() {
     setError(null)
     try {
       await requestDriverLink(raw.replace(/\D/g, ''))
-      setSentAt(Date.now())
-      setNow(Date.now())
+      setSentAt(nowMs())
+      setNow(nowMs())
     } catch (err) {
       // Same confirmation whether or not the number exists; only rate limits and bad input show.
       if (errorCode(err) === 'RATE_LIMITED' || errorCode(err) === 'INVALID_PHONE') setError(err)
       else {
-        setSentAt(Date.now())
-        setNow(Date.now())
+        setSentAt(nowMs())
+        setNow(nowMs())
       }
     }
   }
@@ -90,7 +91,13 @@ export function DriverLoginPage() {
               {t('driver.login.send')}
             </Button>
           ) : (
-            <Button variant="secondary" size="md" block disabled={left > 0} onClick={() => void send(getValues('phone'))}>
+            <Button
+              variant="secondary"
+              size="md"
+              block
+              className="h-auto min-h-11 py-2 whitespace-normal"
+              disabled={left > 0}
+              onClick={() => void send(getValues('phone'))}>
               {left > 0 ? t('common.auth.sendAgainIn', { seconds: left }) : t('common.auth.sendAgain')}
             </Button>
           )}

@@ -61,7 +61,7 @@
     "body": "Slot {{slot}} becomes free.",
     "confirm": "Mark exit"
   },
-  "map": {
+  "zoneMap": {
     "loading": "Loading map",
     "slotSheetEmpty": "No vehicle in this slot.",
     "slotStatus": "Slot {{slot}}",

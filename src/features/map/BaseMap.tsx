@@ -49,6 +49,8 @@ export type BaseMapProps = {
   className?: string
   /** Accessible name for the map region. */
   ariaLabel?: string
+  /** Where the (always visible) attribution sits; offset in px pushes it clear of floating bars. */
+  attribution?: { position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'; offset?: number }
 }
 
 let streetStylePromise: Promise<StyleSpecification | string> | null = null
@@ -116,6 +118,7 @@ export function BaseMap({
   onUserMove,
   className,
   ariaLabel,
+  attribution,
 }: BaseMapProps) {
   const { t } = useTranslation('map')
   const containerRef = useRef<HTMLDivElement>(null)
@@ -124,6 +127,7 @@ export function BaseMap({
   const kind = effectiveKind(baseLayer)
   const kindRef = useRef(kind)
   const onUserMoveRef = useRef(onUserMove)
+  const attributionRef = useRef(attribution)
   useEffect(() => {
     onUserMoveRef.current = onUserMove
   })
@@ -150,7 +154,7 @@ export function BaseMap({
           minZoom: MIN_ZOOM,
           maxZoom: kindRef.current === 'satellite' ? MAX_ZOOM_SATELLITE : MAX_ZOOM_STREET,
           maxBounds: bounds ? [bounds[0], bounds[1], bounds[2], bounds[3]] : undefined,
-          attributionControl: { compact: true },
+          attributionControl: false,
           interactive,
           dragRotate: false,
           pitchWithRotate: false,
@@ -158,6 +162,15 @@ export function BaseMap({
           fadeDuration: 0,
         })
         map.touchZoomRotate.disableRotation()
+        const pos = attributionRef.current?.position ?? 'bottom-right'
+        map.addControl(new lib.AttributionControl({ compact: true }), pos)
+        const offset = attributionRef.current?.offset
+        const corner = container.querySelector<HTMLElement>(`.maplibregl-ctrl-${pos}`)
+        if (corner && offset) corner.style[pos.startsWith('top') ? 'top' : 'bottom'] = `${offset}px`
+        // Start collapsed to the (i) button; the attribution stays one tap away.
+        map.once('idle', () => {
+          container.querySelector('.maplibregl-ctrl-attrib')?.classList.remove('maplibregl-compact-show')
+        })
         created = map
         map.on('style.load', () => {
           setCtx((c) => ({ ...c, map, lib, styleVersion: c.styleVersion + 1, zoom: map.getZoom() }))
@@ -232,7 +245,7 @@ export function BaseMap({
   return (
     <MapContext.Provider value={ctx}>
       <div className={cn('relative isolate h-full w-full overflow-hidden bg-surface-2', className)}>
-        <div ref={containerRef} className="absolute inset-0" role="region" aria-label={ariaLabel} />
+        <div ref={containerRef} className="h-full w-full" role="region" aria-label={ariaLabel} />
         {failed ? (
           <p className="absolute inset-0 flex items-center justify-center p-6 text-center text-body-sm text-muted">
             {t('map.loadFailed')}

@@ -12,7 +12,7 @@ import type { Language } from '@/types/domain'
  */
 
 export const LANGUAGES: readonly Language[] = ['en', 'ml']
-export const NAMESPACES = ['common', 'driver', 'gate', 'zone', 'admin', 'map', 'reports', 'errors'] as const
+export const NAMESPACES = ['common', 'driver', 'gate', 'zone', 'admin', 'map', 'reports', 'errors', 'sim'] as const
 export type Namespace = (typeof NAMESPACES)[number]
 
 const BUNDLED: readonly Namespace[] = ['common', 'driver', 'errors']

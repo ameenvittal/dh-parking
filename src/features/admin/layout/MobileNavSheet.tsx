@@ -18,7 +18,7 @@ export function MobileNavSheet({ open, onOpenChange, admin, alertCount, sos }: M
   const { t } = useTranslation('common')
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="left" className="w-72 pt-safe" aria-describedby={undefined}>
+      <SheetContent side="left" className="w-72 pt-safe" onOpenAutoFocus={(e) => e.preventDefault()}>
         <SheetTitle className="sr-only">{t('shell.mainNav')}</SheetTitle>
         <SheetDescription className="sr-only">{t('shell.mainNav')}</SheetDescription>
         <div className="flex h-14 shrink-0 items-center border-b border-line px-4">

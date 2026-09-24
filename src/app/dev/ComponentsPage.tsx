@@ -59,7 +59,7 @@ export function ComponentsPage() {
     <div className="mx-auto flex max-w-240 flex-col gap-8 px-4 py-8">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-h1">/dev/components</h1>
-        <LanguageSwitch variant="short" size="sm" className="w-28" />
+        <LanguageSwitch variant="short" size="sm" className="w-28 shrink-0" />
       </div>
 
       <Section title="Buttons">

@@ -21,11 +21,11 @@ export function DemoAccounts({ onPick }: DemoAccountsProps) {
         {t('auth.demoAccounts')}
       </h2>
       <p className="text-body-sm text-muted">{t('auth.demoHint')}</p>
-      <ul className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+      <ul className="grid grid-cols-1 gap-2 sm:grid-cols-3">
         {ACCOUNTS.map((a) => {
           const Icon = a.icon
           return (
-            <li key={a.username} className="sm:flex-1">
+            <li key={a.username}>
               <button
                 type="button"
                 onClick={() => onPick(a.username, a.password)}

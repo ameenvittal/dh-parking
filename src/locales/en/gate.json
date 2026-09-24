@@ -1,0 +1,39 @@
+{
+  "home": {
+    "checkIn": "Check in vehicle",
+    "leaving": "Vehicle leaving",
+    "find": "Find a vehicle",
+    "freeNow": "Free now"
+  },
+  "photo": {
+    "empty": "Take a photo of the vehicle. Include the pass card if it's on the dashboard.",
+    "take": "Take photo",
+    "use": "Use photo",
+    "retake": "Retake",
+    "manual": "Enter details manually",
+    "reading": "Reading plate…"
+  },
+  "details": {
+    "plateLabel": "Number plate",
+    "checkPlate": "Check the plate",
+    "highConfidence": "High confidence",
+    "invalidPlate": "This doesn't look like an Indian plate. Check it.",
+    "alreadyIn": "Already checked in: {{slot}}",
+    "accessible": "Needs accessible parking"
+  },
+  "phone": {
+    "helper": "The parking link is sent on WhatsApp to this number."
+  },
+  "slot": {
+    "recommended": "Recommended",
+    "otherFree": "Other free slots",
+    "fromGate": "{{distance}} from this gate",
+    "pickOnMap": "Pick on map",
+    "assignSend": "Assign and send"
+  },
+  "done": {
+    "title": "Checked in",
+    "scanQr": "Driver can scan this to open the map",
+    "next": "Check in next vehicle"
+  }
+}

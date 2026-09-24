@@ -1,0 +1,53 @@
+{
+  "title": "WhatsApp simulator",
+  "subtitle": "Messages the app would send on WhatsApp. Nothing leaves this browser.",
+  "chats": "Chats",
+  "empty": {
+    "title": "No messages yet",
+    "body": "Check in a vehicle at the gate. The driver's message appears here."
+  },
+  "pickChat": "Pick a chat to read the messages.",
+  "business": "{{name}} parking",
+  "backToChats": "Back to chats",
+  "unread_one": "{{count}} unread message",
+  "unread_other": "{{count}} unread messages",
+  "status": {
+    "queued": "Sending",
+    "sent": "Sent",
+    "delivered": "Delivered",
+    "read": "Read",
+    "failed": "Not delivered"
+  },
+  "failedHint": "This number isn't on WhatsApp (error {{code}}).",
+  "typeMessage": "Type a message",
+  "send": "Send",
+  "replyHint": "Reply as the driver to get a fresh link.",
+  "demoNote": "Numbers ending in 00 always fail, to test the QR fallback.",
+  "dock": {
+    "open": "Demo tools",
+    "title": "Demo tools",
+    "description": "Only in demo mode. This tab is one device.",
+    "openSim": "Open WhatsApp simulator",
+    "addTraffic": "Add sample traffic",
+    "addTrafficHint": "About 120 vehicles across the event, so the dashboard and reports have data.",
+    "addTrafficDone_one": "Added {{count}} sample vehicle",
+    "addTrafficDone_other": "Added {{count}} sample vehicles",
+    "reset": "Reset demo data",
+    "resetHint": "Back to the starting map with no vehicles. Staff stay signed in.",
+    "resetTitle": "Reset demo data?",
+    "resetBody": "All vehicles, alerts and messages are deleted in every tab.",
+    "resetDone": "Demo data reset",
+    "gps": "Simulate GPS",
+    "gpsHint": "Use a made-up location in this tab instead of the real one.",
+    "moveTo": "Move to",
+    "mainGate": "Main gate",
+    "mySlot": "My slot",
+    "nudge": "Move 10 m",
+    "north": "North",
+    "south": "South",
+    "east": "East",
+    "west": "West",
+    "position": "{{lat}}, {{lng}}",
+    "noPosition": "No location set yet"
+  }
+}

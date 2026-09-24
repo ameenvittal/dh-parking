@@ -2,6 +2,26 @@
 
 Instructions for any AI coding agent or developer working in this repository. Follow them exactly. When something is not covered, stop and ask instead of inventing behaviour.
 
+## Docs index
+
+Read in this order. Every file is binding; if two disagree, the lower number wins and the conflict is reported.
+
+| # | File | What it decides |
+|---|---|---|
+| - | [README.md](README.md) | What the app is |
+| 01 | [docs/01-PRD.md](docs/01-PRD.md) | Scope, roles, flow, feature IDs, acceptance criteria, decisions (16 demo mode, 17 admin English only) |
+| 02 | [docs/02-ARCHITECTURE.md](docs/02-ARCHITECTURE.md) | Stack, allowed libraries, folders, auth, realtime, env vars |
+| 03 | [docs/03-DATABASE.md](docs/03-DATABASE.md) | Enums, tables, RLS, triggers |
+| 04 | [docs/04-BACKEND-SERVICES.md](docs/04-BACKEND-SERVICES.md) | Every RPC and Edge Function, error codes, `api.ts` names |
+| 05 | [docs/05-MAPS-AND-NAVIGATION.md](docs/05-MAPS-AND-NAVIGATION.md) | Map stack, editor, slot generator, road graph, routing, live tracking |
+| 06 | [docs/06-DESIGN-SYSTEM.md](docs/06-DESIGN-SYSTEM.md) | Tokens, type, components, map styling, copy rules |
+| 07 | [docs/07-UI-PAGES.md](docs/07-UI-PAGES.md) | Every route and screen, states and actions |
+| 08 | [docs/08-WHATSAPP-AND-AI.md](docs/08-WHATSAPP-AND-AI.md) | WhatsApp templates, Gemini extraction, admin assistant |
+| 09 | [docs/09-REPORTS.md](docs/09-REPORTS.md) | Report definitions, charts, Excel and PDF |
+| 10 | [docs/10-I18N.md](docs/10-I18N.md) | English and Malayalam, key rules, core strings |
+| 11 | [docs/11-SETUP-DEPLOY-QA.md](docs/11-SETUP-DEPLOY-QA.md) | Setup, deploy, test plan, event-day runbook |
+| 12 | [docs/12-BUILD-PLAN.md](docs/12-BUILD-PLAN.md) | Milestones and task IDs |
+
 ## 1. Before you write code
 
 1. Read `README.md`, then `docs/01-PRD.md` through `docs/12-BUILD-PLAN.md` in order.
@@ -93,3 +113,23 @@ PR description: what changed, feature IDs, screenshots at 360 px and 1280 px for
 - Forgetting that zone volunteers can confirm a vehicle whose driver never tapped "Mark as parked".
 - Forgetting the QR fallback on the gate "Done" step when WhatsApp fails.
 - Rendering Malayalam in jsPDF. PDF exports are English only (see `docs/09-REPORTS.md`).
+
+## 7. Demo mode
+
+PRD decision 16. There is no Supabase backend yet: the RPCs and Edge Functions from `docs/04-BACKEND-SERVICES.md` run in the browser under `src/lib/demo/`. Components still call only `src/features/<feature>/api.ts`; swapping to Supabase means reimplementing those function bodies. `DEMO_MODE` lives in `src/config/app.ts`.
+
+- **Run it:** `pnpm install`, then `pnpm dev` and open the printed URL. No Docker, no Supabase CLI and no env vars are needed.
+- **Data:** stored in `localStorage` and shared by all tabs of the same browser; changes show up in other tabs live (the realtime simulation). **Each tab is one device**: the signed-in user lives in `sessionStorage`, so use one tab for the gate, one for the driver, one for the zone and one for the admin.
+- **Accounts** (the staff login page shows them as quick-fill buttons):
+
+  | Role | Username | Password |
+  |---|---|---|
+  | Admin | `admin` | `admin12345` |
+  | Gate volunteer | `gate1` | `test12345` |
+  | Zone volunteer | `zoneA` (stored as `zonea`; sign-in lowercases it) | `test12345` |
+
+- **WhatsApp simulator:** open `/sim` in its own tab (links on `/login`, `/driver/login`, the admin account menu and the demo tools button). Every message the app "sends" shows up there as a chat per phone number, with its delivery status. Tap the message button to open the driver link (`/d/<token>`) as that driver; open it in a new tab to keep the driver separate from the gate. Typing a reply sends an inbound message and triggers the auto-reply with a fresh link. `/sim?phone=+919876543210` opens one chat.
+- **Photo reading:** the gate photo goes to `POST /api/extract-vehicle`, served by the Vite dev and preview server (`scripts/geminiPlugin.ts`). Put `GEMINI_API_KEY` (and optionally `GEMINI_MODEL`) in `.env` without a `VITE_` prefix; the key never reaches the browser. Without a key, or when Gemini fails, a simulated result is used and the form still works.
+- **Demo tools:** the round button at the bottom left of every screen (demo mode only) opens the WhatsApp simulator, adds sample traffic, simulates GPS for this tab, and resets the data.
+- **Reset:** Demo tools, then "Reset demo data". This restores the starting map with no vehicles, alerts or messages in every tab; staff stay signed in. To wipe everything, including sessions, clear the site data for the origin in the browser.
+- **Local ports when several agents work at once:** Chat 1 5172 (5173 was taken), Chat 2 5174, Chat 3 5175, Chat 4 5176. The configurations are in `.claude/launch.json`.
